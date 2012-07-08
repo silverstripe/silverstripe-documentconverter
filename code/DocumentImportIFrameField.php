@@ -5,14 +5,50 @@ class DocumentImportIFrameField extends FileIFrameField {
 
 	protected $unusedChildren = array();
 
-	public function save($data, $form) {
+	protected $addLinkToFile = false;
 
+	protected $PublishChildren = false;
+
+	protected $ContentTable = false;
+
+
+	public function save($data, $form) {
+		if(isset($data['PublishChildren']) && $data['PublishChildren'] == 1) $this->PublishChildren = true;
+		if(isset($data['ContentTable']) && $data['ContentTable'] == 1) $this->ContentTable = true;
+		if(isset($data['KeepSource']) && $data['KeepSource'] == '1') {
+			$tempConfig = File::$apply_restrictions_to_admin;
+			File::$apply_restrictions_to_admin = false;
+			copy($_FILES['Upload']['tmp_name'], ASSETS_PATH . '/' . $_FILES['Upload']['name']);
+			$file = new File();
+			$file->Name = $_FILES['Upload']['name'];
+			$file->write();
+			$this->addLinkToFile = true;
+			$page = $this->form->getRecord();
+			$page->ImportFromFileID = $file->ID;
+			$page->write();
+		} 
+		File::$apply_restrictions_to_admin = $tempConfig;
 		$splitHeader = isset($data['SplitHeader']) ? (int) $data['SplitHeader'] : 1;
 		$this->importFrom($_FILES['Upload']['tmp_name'], $splitHeader);
 
 		// Respond by making the tree expand and the page reload
 		$ID = $this->form->getRecord()->ID;
 		$title = $this->form->getRecord()->TreeTitle();
+
+		// create table of content
+		if($this->ContentTable) {
+			$page = $this->form->getRecord();
+			$content = '<ul>';
+			if($page) {
+				foreach($page->Children() as $child) {
+					$content .= '<li><a href="' . $child->Link() . '">' . $child->Title . '</a></li>';
+				}
+				$page->Content = $content . $page->Content;
+				$page->write();
+				if($this->PublishChildren) $page->doPublish();
+			} 
+
+		}
 
 		if(!SapphireTest::is_running_test()) {
 			echo "<script type='text/javascript'>
@@ -28,7 +64,7 @@ class DocumentImportIFrameField extends FileIFrameField {
 
 	public function EditFileForm() {
 		$filefield = new FileField('Upload', '');
-		// var_dump($this); die;
+		
 		$form = new Form (
 			$this,
 			'EditFileForm',
@@ -36,7 +72,10 @@ class DocumentImportIFrameField extends FileIFrameField {
 				new HeaderField('FileSelectHeader', 'Select the word document to import'),
 				new NumericField('SplitHeader', 'Split on header level', 1, 1),
 				$filefield,
-				new HeaderField('FileWarningHeader', 'Warning: import will remove all content and subpages of this page', 4)
+				new HeaderField('FileWarningHeader', 'Warning: import will remove all content and subpages of this page', 4),
+				new CheckboxField('KeepSource', 'Keep document and add a link to it on this page'),
+				new CheckboxField('PublishChildren', 'Publish new pages generated from DOC file (not recommended)'),
+				new CheckboxField('ContentTable', 'Create a Table of Content (Warning: this will replace this page content)')
 			),
 			new FieldSet(
 				new FormAction('save', 'Import content from doc')
@@ -45,6 +84,57 @@ class DocumentImportIFrameField extends FileIFrameField {
 
 		$form->disableSecurityToken();
 		return $form;
+	}
+
+	public function Field() {
+		parent::Field();
+		Requirements::css('documentconverter/css/DocumentImportIFrameField.css');
+		if($this->form->getRecord() && $this->form->getRecord()->exists()) {
+			$record = $this->form->getRecord();
+			if(Object::has_extension('SiteTree', 'Translatable') && $record->Locale){
+				$iframe = "iframe?locale=".$record->Locale;
+			}else{
+				$iframe = "iframe";
+			}
+			
+			return $this->createTag (
+				'iframe',
+				array (
+					'name'  => $this->Name() . '_iframe',
+					'src'   => Controller::join_links($this->Link(), $iframe),
+					'style' => 'height: 280px; width: 100%; border: none;'
+				)
+			) . $this->createTag (
+				'input',
+				array (
+					'type'  => 'hidden',
+					'id'    => $this->ID(),
+					'name'  => $this->Name() . 'ID',
+					'value' => $this->attrValue()
+				)
+			);
+		}
+		
+		$this->setValue(sprintf(_t (
+			'FileIFrameField.ATTACHONCESAVED', '%ss can be attached once you have saved the record for the first time.'
+		), $this->FileTypeName()));
+		
+		return FormField::field();
+	}
+
+	public function iframe() {
+		// clear the requirements added by any parent controllers
+		Requirements::clear();
+		Requirements::add_i18n_javascript('sapphire/javascript/lang');
+		Requirements::javascript(THIRDPARTY_DIR . '/prototype/prototype.js');
+		Requirements::javascript(THIRDPARTY_DIR . '/jquery/jquery.js');
+		Requirements::javascript('sapphire/javascript/FileIFrameField.js');
+		
+		Requirements::css('cms/css/typography.css');
+		Requirements::css('sapphire/css/FileIFrameField.css');
+		Requirements::css('documentconverter/css/DocumentImportIFrameField.css');
+		
+		return $this->renderWith('FileIFrameField');
 	}
 
 	protected function getBodyText($doc, $node) {
@@ -77,10 +167,12 @@ class DocumentImportIFrameField extends FileIFrameField {
 			$page->Sort = (++$sort);
 			$page->Content = $this->getBodyText($subdoc, $subnode);
 			$page->write();
+			if($this->PublishChildren) $page->doPublish();
 		} else {
 			$record->Content = $this->getBodyText($subdoc, $subnode);
 			$record->write();
 		}
+		
 	}
 
 	/**
@@ -92,17 +184,19 @@ class DocumentImportIFrameField extends FileIFrameField {
 		$importerClass = self::$importer_class;
 		$importer = new $importerClass($path);
 		$content = $importer->import();
-		// print_r($content); die;
+		
 		// delete the File record, as it was just temporary to store a zip file of the import
 		$fileID = $sourcePage->{$this->name . 'ID'};
-		if($fileID) {
+		
+		if($fileID && !$this->addLinkToFile) {
 			$sourcePage->{$this->name}()->delete();
 		}
 
+		// you need Tidy, i.e. port install php5-tidy
 		$tidy = new Tidy();
 		$tidy->parseString($content, array('output-xhtml' => true), 'utf8');
 		$tidy->cleanRepair();
-
+		// print_r($tidy); die;
 		$doc = new DOMDocument();
 		$doc->strictErrorChecking = false;
 		$doc->loadHTML('' . $tidy);
@@ -228,6 +322,26 @@ class DocumentImportIFrameField_Importer {
 
 	protected $path;
 
+	protected static $docvert_username;
+
+	protected static $docvert_password;
+
+	public static function set_docvert_username($username = null)  {
+		self::$docvert_username = $username;
+	}
+
+	public static function get_docvert_username() {
+		return self::$docvert_username;
+	} 
+
+	public static function set_docvert_password($password = null) {
+		self::$docvert_password = $password;
+	}
+
+	public static function get_docvert_password() {
+		return self::$docvert_password;
+	}
+
 	public function __construct($path) {
 		$this->path = $path;
 	}
@@ -238,7 +352,7 @@ class DocumentImportIFrameField_Importer {
 		curl_setopt_array($ch, array(
 			CURLOPT_URL => 'http://docvert.silverstripe.com/',
 			CURLOPT_PORT => 8888,
-			CURLOPT_USERPWD => sprintf('%s:%s', DOCVERT_USERNAME, DOCVERT_PASSWORD),
+			CURLOPT_USERPWD => sprintf('%s:%s', self::get_docvert_username(), self::get_docvert_password()),
 			CURLOPT_POST => 1,
 			CURLOPT_POSTFIELDS => array('file' => '@' . $this->path),
 			CURLOPT_CONNECTTIMEOUT => 5,
@@ -253,11 +367,12 @@ class DocumentImportIFrameField_Importer {
 		curl_exec($ch);
 		curl_close($ch);
 		fclose($out);
-		// var_dump($ch); die;
 		chmod($outzip, 0777);
+
 		// extract the converted document into assets
+		// you need php zip, i.e. port install php5-zip
 		$zip = new ZipArchive();
-		// var_dump($zip->open($outzip)); die;
+		
 		if($zip->open($outzip)) {
 			$zip->extractTo(ASSETS_PATH);
 		}

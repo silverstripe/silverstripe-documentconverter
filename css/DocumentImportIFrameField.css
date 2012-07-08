@@ -1,0 +1,7 @@
+.mainblock {
+	height: 240px;
+	border: none;
+}
+	.mainblock.editform {
+		width: 360px;
+	}
