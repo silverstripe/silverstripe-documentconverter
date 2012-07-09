@@ -1,7 +1,11 @@
 .mainblock {
-	height: 240px;
+	height: 290px;
 	border: none;
 }
 	.mainblock.editform {
 		width: 360px;
 	}
+
+#ChosenFolder {
+	display: none;
+}

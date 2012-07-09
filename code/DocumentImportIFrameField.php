@@ -11,21 +11,33 @@ class DocumentImportIFrameField extends FileIFrameField {
 
 	protected $ContentTable = false;
 
+	static $folder_id = null;
 
 	public function save($data, $form) {
-		if(isset($data['PublishChildren']) && $data['PublishChildren'] == 1) $this->PublishChildren = true;
-		if(isset($data['ContentTable']) && $data['ContentTable'] == 1) $this->ContentTable = true;
-		if(isset($data['KeepSource']) && $data['KeepSource'] == '1') {
-			
-			copy($_FILES['Upload']['tmp_name'], ASSETS_PATH . '/' . $_FILES['Upload']['name']);
+		if(isset($data['PublishChildren'])) $this->PublishChildren = true;
+		if(isset($data['ContentTable'])) $this->ContentTable = true;
+
+		if(isset($data['KeepSource'])) {
 			$file = new File();
 			$file->Name = $_FILES['Upload']['name'];
+			if(isset($data['ChosenFolder'])) {
+				$folder = DataObject::get_by_id('Folder',(int)$data['ChosenFolder']);
+				if($folder) {
+					copy($_FILES['Upload']['tmp_name'], ASSETS_PATH . '/' . $folder->Name . '/' . str_replace(' ','-',$_FILES['Upload']['name']));
+					$file->ParentID = (int)$data['ChosenFolder'];
+					self::$folder_id = $folder->ID;
+				} else {
+					copy($_FILES['Upload']['tmp_name'], ASSETS_PATH . '/' . str_replace(' ','-',$_FILES['Upload']['name']));
+				}
+				
+			} else {
+				copy($_FILES['Upload']['tmp_name'], ASSETS_PATH . '/' . str_replace(' ','-',$_FILES['Upload']['name']));
+			}
 			$file->write();
 			$this->addLinkToFile = true;
 			$page = $this->form->getRecord();
 			$page->ImportFromFileID = $file->ID;
 			$page->write();
-			
 		} 
 		
 		$splitHeader = isset($data['SplitHeader']) ? (int) $data['SplitHeader'] : 1;
@@ -40,10 +52,34 @@ class DocumentImportIFrameField extends FileIFrameField {
 			$page = $this->form->getRecord();
 			$content = '<ul>';
 			if($page) {
-				foreach($page->Children() as $child) {
-					$content .= '<li><a href="' . $child->Link() . '">' . $child->Title . '</a></li>';
+				
+				if($page->Children()->Count() > 0) {
+					foreach($page->Children() as $child) {
+						$content .= '<li><a href="' . $child->Link() . '">' . $child->Title . '</a></li>';
+					}
+					$page->Content = $content . '</ul>';
+				}  else {
+					$doc = new DOMDocument();
+					$doc->loadHTML($page->Content);
+					$body = $doc->getElementsByTagName('body')->item(0);
+					$node = $body->firstChild;
+					$h1 = $h2 = 1;
+					while($node) {
+						if($node instanceof DOMElement && $node->tagName == 'h1') {
+							$content .= '<li><a href="#h1.' . $h1 . '">'. trim(preg_replace('/\n|\r/', '', Convert::html2raw($node->textContent))) . '</a></li>';
+							$node->setAttributeNode(new DOMAttr("id", "h1.".$h1));
+							$h1++;
+						} elseif($node instanceof DOMElement && $node->tagName == 'h2') {
+							$content .= '<li class="menu-h2"><a href="#h2.' . $h2 . '">'. trim(preg_replace('/\n|\r/', '', Convert::html2raw($node->textContent))) . '</a></li>';
+							$node->setAttributeNode(new DOMAttr("id", "h2.".$h2));
+							$h2++;
+						}
+						$node = $node->nextSibling;
+					}
+					$page->Content = $content . '</ul>' . $doc->saveHTML();
 				}
-				$page->Content = $content . $page->Content;
+				
+				
 				if($this->addLinkToFile) $page->Content = '<a href="' . $file->Link() . '" title="download original document">download original document (' . $file->getSize() . ')</a>' . $page->Content;
 				$page->write();
 				if($this->PublishChildren) $page->doPublish();
@@ -71,12 +107,14 @@ class DocumentImportIFrameField extends FileIFrameField {
 			'EditFileForm',
 			new FieldSet(
 				new HeaderField('FileSelectHeader', 'Select the word document to import'),
-				new NumericField('SplitHeader', 'Split on header level', 1, 1),
-				$filefield,
 				new HeaderField('FileWarningHeader', 'Warning: import will remove all content and subpages of this page', 4),
+				new DropdownField('SplitHeader', 'Split document into pages', array(0 => 'no', 1 => 'for each heading 1', 2 => 'for each heading 2')),
+				$filefield,
 				new CheckboxField('KeepSource', 'Keep document and add a link to it on this page'),
+				new TreeDropdownField('ChosenFolder','Choose a folder to save this file', 'Folder'),
 				new CheckboxField('PublishChildren', 'Publish new pages generated from DOC file (not recommended)'),
-				new CheckboxField('ContentTable', 'Create a Table of Content (Warning: this will replace this page content)')
+				new CheckboxField('ContentTable', 'Create a Table of Content')
+
 			),
 			new FieldSet(
 				new FormAction('save', 'Import content from doc')
@@ -89,7 +127,6 @@ class DocumentImportIFrameField extends FileIFrameField {
 
 	public function Field() {
 		parent::Field();
-		Requirements::css('documentconverter/css/DocumentImportIFrameField.css');
 		if($this->form->getRecord() && $this->form->getRecord()->exists()) {
 			$record = $this->form->getRecord();
 			if(Object::has_extension('SiteTree', 'Translatable') && $record->Locale){
@@ -103,7 +140,7 @@ class DocumentImportIFrameField extends FileIFrameField {
 				array (
 					'name'  => $this->Name() . '_iframe',
 					'src'   => Controller::join_links($this->Link(), $iframe),
-					'style' => 'height: 280px; width: 100%; border: none;'
+					'style' => 'height: 300px; width: 100%; border: none;'
 				)
 			) . $this->createTag (
 				'input',
@@ -130,7 +167,7 @@ class DocumentImportIFrameField extends FileIFrameField {
 		Requirements::javascript(THIRDPARTY_DIR . '/prototype/prototype.js');
 		Requirements::javascript(THIRDPARTY_DIR . '/jquery/jquery.js');
 		Requirements::javascript('sapphire/javascript/FileIFrameField.js');
-		
+		Requirements::javascript('documentconverter/javascript/documentImportIFrameField.js');
 		Requirements::css('cms/css/typography.css');
 		Requirements::css('sapphire/css/FileIFrameField.css');
 		Requirements::css('documentconverter/css/DocumentImportIFrameField.css');
@@ -142,7 +179,8 @@ class DocumentImportIFrameField extends FileIFrameField {
 		// Build a new doc
 		$htmldoc = new DOMDocument(); 
 		// Create the html element
-		$html = $htmldoc->createElement('html'); $htmldoc->appendChild($html);
+		$html = $htmldoc->createElement('html'); 
+		$htmldoc->appendChild($html);
 		// Append the body node
 		$html->appendChild($htmldoc->importNode($node, true));
 
@@ -154,15 +192,14 @@ class DocumentImportIFrameField extends FileIFrameField {
 		return $text;
 	}
 
-	protected function writeContent($subtitle, $subdoc, $subnode, $sort) {
+	protected function writeContent($subtitle, $subdoc, $subnode, $sort, $split = false) {
 		$record = $this->form->getRecord();
-
+		
 		if($subtitle) {
 			$page = DataObject::get_one('Page', sprintf('"Title" = \'%s\' AND "ParentID" = %d', $subtitle, $record->ID));
 			if(!$page) $page = new Page(array('ParentID' => $record->ID, 'Title' => $subtitle));
 
 			unset($this->unusedChildren[$page->ID]);
-
 			file_put_contents(ASSETS_PATH . '/index-' . ($sort + 1) . '.html', $this->getBodyText($subdoc, $subnode));
 
 			$page->Sort = (++$sort);
@@ -170,8 +207,11 @@ class DocumentImportIFrameField extends FileIFrameField {
 			$page->write();
 			if($this->PublishChildren) $page->doPublish();
 		} else {
-			// $record->Content = $this->getBodyText($subdoc, $subnode);
-			// $record->write();
+			if($split) {
+				$record->Content = $this->getBodyText($subdoc, $subnode);
+				$record->write();
+			}
+			
 			if($this->PublishChildren) $record->doPublish();
 		}
 		
@@ -208,10 +248,11 @@ class DocumentImportIFrameField extends FileIFrameField {
 		$xpath = new DOMXPath($doc);
 
 		// Fix img links to be relative to assets
+		$folderName = (self::$folder_id) ? DataObject::get_by_id('Folder', self::$folder_id)->Name : '';
 		$imgs = $xpath->query('//img');
 		for($i = 0; $i < $imgs->length; $i++) {
 			$img = $imgs->item($i);
-			$img->setAttribute('src', 'assets/'.$img->getAttribute('src'));
+			$img->setAttribute('src', 'assets/'. $folderName . '/' . $img->getAttribute('src'));
 		}
 
 		$remove_rules = array(
@@ -270,34 +311,36 @@ class DocumentImportIFrameField extends FileIFrameField {
 		}
 
 		// Now split the document into portions by H1
-
 		$body = $doc->getElementsByTagName('body')->item(0);
 
 		$this->unusedChildren = array();
 		foreach($sourcePage->Children() as $child) {
 			$this->unusedChildren[$child->ID] = $child;
 		}
-
+		
 		$subtitle = null;
 		$subdoc = new DOMDocument();
 		$subnode = $subdoc->createElement('body');
 		$node = $body->firstChild;
 		$sort = 0;
+		if($splitHeader == 1 || $splitHeader == 2) {
+			while($node) {
+				if($node instanceof DOMElement && $node->tagName == 'h' . $splitHeader) {
+					if($subnode->hasChildNodes()) {
+						$this->writeContent($subtitle, $subdoc, $subnode, $sort);
+					}
 
-		while($node) {
-			if($node instanceof DOMElement && $node->tagName == 'h' . $splitHeader) {
-				if($subnode->hasChildNodes()) {
-					$this->writeContent($subtitle, $subdoc, $subnode, $sort);
+					$subdoc = new DOMDocument();
+					$subnode = $subdoc->createElement('body');
+					$subtitle = trim(preg_replace('/\n|\r/', '', Convert::html2raw($node->textContent)));
+				} else {
+					$subnode->appendChild($subdoc->importNode($node, true));
 				}
 
-				$subdoc = new DOMDocument();
-				$subnode = $subdoc->createElement('body');
-				$subtitle = trim(preg_replace('/\n|\r/', '', Convert::html2raw($node->textContent)));
-			} else {
-				$subnode->appendChild($subdoc->importNode($node, true));
+				$node = $node->nextSibling;
 			}
-
-			$node = $node->nextSibling;
+		} else {
+			$this->writeContent($subtitle, $subdoc, $body, $sort, true);
 		}
 		
 		if($subnode->hasChildNodes()) {
@@ -363,6 +406,9 @@ class DocumentImportIFrameField_Importer {
 			CURLOPT_TIMEOUT => 20,
 		));
 
+		$folderID = DocumentImportIFrameField::$folder_id;
+
+		$folderName = ($folderID) ? '/'.DataObject::get_by_id('Folder', $folderID)->Name : '';
 		$outname = tempnam(ASSETS_PATH, 'convert');
 		$outzip = $outname . '.zip';
 
@@ -378,16 +424,16 @@ class DocumentImportIFrameField_Importer {
 		$zip = new ZipArchive();
 		
 		if($zip->open($outzip)) {
-			$zip->extractTo(ASSETS_PATH);
+			$zip->extractTo(ASSETS_PATH .$folderName);
 		}
 
 		// remove temporary files
 		unlink($outname);
 		unlink($outzip);
 
-		$content = file_get_contents(ASSETS_PATH . '/index.html');
+		$content = file_get_contents(ASSETS_PATH . $folderName . '/index.html');
 
-		unlink(ASSETS_PATH . '/index.html');
+		unlink(ASSETS_PATH . $folderName . '/index.html');
 
 		return $content;
 	}
