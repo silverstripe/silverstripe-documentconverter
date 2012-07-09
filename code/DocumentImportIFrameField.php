@@ -16,8 +16,7 @@ class DocumentImportIFrameField extends FileIFrameField {
 		if(isset($data['PublishChildren']) && $data['PublishChildren'] == 1) $this->PublishChildren = true;
 		if(isset($data['ContentTable']) && $data['ContentTable'] == 1) $this->ContentTable = true;
 		if(isset($data['KeepSource']) && $data['KeepSource'] == '1') {
-			$tempConfig = File::$apply_restrictions_to_admin;
-			File::$apply_restrictions_to_admin = false;
+			
 			copy($_FILES['Upload']['tmp_name'], ASSETS_PATH . '/' . $_FILES['Upload']['name']);
 			$file = new File();
 			$file->Name = $_FILES['Upload']['name'];
@@ -26,8 +25,9 @@ class DocumentImportIFrameField extends FileIFrameField {
 			$page = $this->form->getRecord();
 			$page->ImportFromFileID = $file->ID;
 			$page->write();
+			
 		} 
-		File::$apply_restrictions_to_admin = $tempConfig;
+		
 		$splitHeader = isset($data['SplitHeader']) ? (int) $data['SplitHeader'] : 1;
 		$this->importFrom($_FILES['Upload']['tmp_name'], $splitHeader);
 
@@ -44,6 +44,7 @@ class DocumentImportIFrameField extends FileIFrameField {
 					$content .= '<li><a href="' . $child->Link() . '">' . $child->Title . '</a></li>';
 				}
 				$page->Content = $content . $page->Content;
+				if($this->addLinkToFile) $page->Content = '<a href="' . $file->Link() . '" title="download original document">download original document (' . $file->getSize() . ')</a>' . $page->Content;
 				$page->write();
 				if($this->PublishChildren) $page->doPublish();
 			} 
@@ -169,8 +170,9 @@ class DocumentImportIFrameField extends FileIFrameField {
 			$page->write();
 			if($this->PublishChildren) $page->doPublish();
 		} else {
-			$record->Content = $this->getBodyText($subdoc, $subnode);
-			$record->write();
+			// $record->Content = $this->getBodyText($subdoc, $subnode);
+			// $record->write();
+			if($this->PublishChildren) $record->doPublish();
 		}
 		
 	}
@@ -180,6 +182,7 @@ class DocumentImportIFrameField extends FileIFrameField {
 	 * CAUTION: Overwrites any existing content on the page!
 	 */
 	public function importFrom($path, $splitHeader = 1) {
+
 		$sourcePage = $this->form->getRecord();
 		$importerClass = self::$importer_class;
 		$importer = new $importerClass($path);
@@ -196,9 +199,10 @@ class DocumentImportIFrameField extends FileIFrameField {
 		$tidy = new Tidy();
 		$tidy->parseString($content, array('output-xhtml' => true), 'utf8');
 		$tidy->cleanRepair();
-		// print_r($tidy); die;
+		
 		$doc = new DOMDocument();
 		$doc->strictErrorChecking = false;
+		libxml_use_internal_errors(true);
 		$doc->loadHTML('' . $tidy);
 
 		$xpath = new DOMXPath($doc);
