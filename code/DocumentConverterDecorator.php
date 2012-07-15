@@ -1,9 +1,8 @@
 <?php
 
-class DocumentConverterDecorator extends DataObjectDecorator {
+class DocumentConverterDecorator extends DataExtension {
 	
 	function extraStatics() {
-
 		return array(
 			'has_one' => array(
 				'ImportFromFile' => 'File'
@@ -12,6 +11,6 @@ class DocumentConverterDecorator extends DataObjectDecorator {
 	}
 
 	function updateCMSFields(&$fields) {
-		$fields->addFieldToTab('Root.Content.Import', new DocumentImportIFrameField('ImportFromFile', 'Import content from a word document (CAUTION: Overwrites existing content!)') );
+		$fields->addFieldToTab('Root.Import', new DocumentImportField('ImportFromFile', 'Import content from a word document (CAUTION: Overwrites existing content!)') );
 	}
 }
