@@ -2,7 +2,7 @@
 
 class DocumentConverterDecorator extends DataExtension {
 	
-	function extraStatics() {
+	function extraStatics($class = null, $extension = null) {
 		return array(
 			'has_one' => array(
 				'ImportFromFile' => 'File'
@@ -10,7 +10,7 @@ class DocumentConverterDecorator extends DataExtension {
 		);
 	}
 
-	function updateCMSFields(&$fields) {
+	function updateCMSFields(FieldList $fields) {
 		$fields->addFieldToTab('Root.Import', new DocumentImportField('ImportFromFile', 'Import content from a word document (CAUTION: Overwrites existing content!)') );
 	}
 }
