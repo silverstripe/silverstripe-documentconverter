@@ -11,6 +11,10 @@ class DocumentConverterDecorator extends DataExtension {
 	}
 
 	function updateCMSFields(FieldList $fields) {
-		$fields->addFieldToTab('Root.Import', new DocumentImportField('ImportFromFile', 'Import content from a word document (CAUTION: Overwrites existing content!)') );
+		$fields->addFieldToTab('Root.Main', 
+			ToggleCompositeField::create('Import', 'Import', array(
+				new DocumentImportField('ImportFromFile', 'Import content from a word document (CAUTION: Overwrites existing content!)')
+			))->setHeadingLevel(4)
+		);
 	}
 }
