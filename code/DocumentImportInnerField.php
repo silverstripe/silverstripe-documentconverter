@@ -1,4 +1,29 @@
 <?php
+/**
+ * DocumentImportInnerField is built on top of UploadField to access a document
+ * conversion capabilities. The original field is stripped down to allow only
+ * uploads from the user's computer, and triggers the conversion when the upload
+ * is completed.
+ *
+ * The file upload has additional parameters injected. They are set by the user
+ * through the fields provided on the DocumentImportField:
+ *
+ * * SplitHeader: if enabled, scans the document looking for H1 or H2 headers and
+ *   puts each subsection into separate page. The first part of the document until
+ *   the first header occurence is added to the current page.
+ * * KeepSource: prevents the removal of the uploaded document, and stores its ID
+ *   in the has_one relationship on the parent page (see the 
+ *   DocumentImportField::__construct for how to configure the name of this has_one)
+ * * ChosenFolderID: directory to be used for storing the original document and the
+ *   image files that come along with the document.
+ * * PublishPages: whether the current and the chapter pages should be published.
+ * * IncludeTOC: builds a table of contents and puts it into the parent page. This
+ *   could potentially replace the document content from before the first heading.
+ *   Also, if the KeepSource is enabled, it will inject the document link into this
+ *   page.
+ *
+ *  Caveat: there is some coupling between the above parameters.
+ */
 class DocumentImportInnerField extends UploadField {
 
 	public static $importer_class = 'DocumentImportIFrameField_Importer';
@@ -28,7 +53,6 @@ class DocumentImportInnerField extends UploadField {
 			);
 		}
 
-		// Process the document and write the page.
 		if (!$return['error']) {
 			// Get options for this import.
 			$splitHeader = (int)$request->postVar('SplitHeader');
@@ -37,12 +61,13 @@ class DocumentImportInnerField extends UploadField {
 			$publishPages = (bool)$request->postVar('PublishPages');
 			$includeTOC = (bool)$request->postVar('IncludeTOC');
 
+			// Process the document and write the page.
 			$preservedDocument = null;
 			if ($keepSource) $preservedDocument = $this->preserveSourceDocument($tmpfile, $chosenFolderID);
 
 			$this->importFrom($tmpfile['tmp_name'], $splitHeader, $publishPages, $chosenFolderID);
 
-			if ($includeTOC) $this->writeTOC($publishPages, $keepSource, $preservedDocument);
+			if ($includeTOC) $this->writeTOC($publishPages, $keepSource ? $preservedDocument : null);
 		}
 
 		$response = new SS_HTTPResponse(Convert::raw2json(array($return)));
@@ -52,11 +77,16 @@ class DocumentImportInnerField extends UploadField {
 
 	/**
 	 * Preserves the source file by copying it to a specified folder.
+	 *
+	 * @param $tmpfile Temporary file data structure.
+	 * @param int $chosenFolderID Target folder.
+	 * @return File Stored file.
 	 */
 	protected function preserveSourceDocument($tmpfile, $chosenFolderID = null) {
 		$file = new File();
 		$file->Name = $tmpfile['name'];
 		if($chosenFolderID) {
+			// Store in the selected folder.
 			$folder = DataObject::get_by_id('Folder', $chosenFolderID);
 			if($folder) {
 				copy($tmpfile['tmp_name'], ASSETS_PATH . '/' . $folder->Name . '/' . str_replace(' ','-',$tmpfile['name']));
@@ -66,6 +96,7 @@ class DocumentImportInnerField extends UploadField {
 			}
 			
 		} else {
+			// Store in the root of the asset folder.
 			copy($tmpfile['tmp_name'], ASSETS_PATH . '/' . str_replace(' ','-',$tmpfile['name']));
 		}
 		$file->write();
@@ -78,9 +109,12 @@ class DocumentImportInnerField extends UploadField {
 	}
 
 	/**
-	 * Builds and writes the table of contents to the document.
+	 * Builds and writes the table of contents for the document.
+	 *
+	 * @param bool $publishPage Should the parent page be published.
+	 * @param File $preservedDocument Set if the link to the original document should be added.
 	 */
-	protected function writeTOC($publishPages = 0, $keepSource = 0, $preservedDocument = null) {
+	protected function writeTOC($publishPages = false, $preservedDocument = null) {
 		$page = $this->form->getRecord();
 		$content = '<ul>';
 
@@ -111,10 +145,13 @@ class DocumentImportInnerField extends UploadField {
 				$page->Content = $content . '</ul>' . $doc->saveHTML();
 			}
 
-			if($keepSource && $preservedDocument) {
+			// Add in the link to the original document, if provided.
+			if($preservedDocument) {
 				$page->Content = '<a href="' . $preservedDocument->Link() . '" title="download original document">download original document (' .
 									$preservedDocument->getSize() . ')</a>' . $page->Content;
 			}
+
+			// Store the result
 			$page->write();
 			if($publishPages) $page->doPublish();
 		} 
@@ -137,10 +174,21 @@ class DocumentImportInnerField extends UploadField {
 		return $text;
 	}
 
-	protected function writeContent($subtitle, $subdoc, $subnode, $sort, $splitHeader = false, $publishPages = false) {
+	/**
+	 * Used only when writing the document that has been split by headers.
+	 * Can write both to the chapter pages as well as the master page.
+	 *
+	 * @param string $subtitle Title of the chapter - if missing, it will write to the master page.
+	 * @param $subdoc
+	 * @param $subnode
+	 * @param int $sort Order of the chapter page.
+	 * @param $publishPages Whether to publish the resulting child/master pages.
+	 */
+	protected function writeContent($subtitle, $subdoc, $subnode, $sort = null, $publishPages = false) {
 		$record = $this->form->getRecord();
 		
 		if($subtitle) {
+			// Write the chapter page to a subpage.
 			$page = DataObject::get_one('Page', sprintf('"Title" = \'%s\' AND "ParentID" = %d', $subtitle, $record->ID));
 			if(!$page) {
 				$page = new Page();
@@ -149,17 +197,16 @@ class DocumentImportInnerField extends UploadField {
 			}
 
 			unset($this->unusedChildren[$page->ID]);
-			file_put_contents(ASSETS_PATH . '/index-' . ($sort + 1) . '.html', $this->getBodyText($subdoc, $subnode));
+			file_put_contents(ASSETS_PATH . '/index-' . $sort . '.html', $this->getBodyText($subdoc, $subnode));
 
-			$page->Sort = (++$sort);
+			if ($sort) $page->Sort = $sort;
 			$page->Content = $this->getBodyText($subdoc, $subnode);
 			$page->write();
 			if($publishPages) $page->doPublish();
 		} else {
-			if($splitHeader) {
-				$record->Content = $this->getBodyText($subdoc, $subnode);
-				$record->write();
-			}
+			// Write to the master page.
+			$record->Content = $this->getBodyText($subdoc, $subnode);
+			$record->write();
 			
 			if($publishPages) $record->doPublish();
 		}
@@ -170,10 +217,10 @@ class DocumentImportInnerField extends UploadField {
 	 * Imports a document at a certain path onto the current page and writes it.
 	 * CAUTION: Overwrites any existing content on the page!
 	 *
-	 * @param string Path to the document to convert.
-	 * @param int splitHeader Heading level to split by.
-	 * @param bool publishPages Whether the underlying pages should be published after import.
-	 * @param int chosenFolderID ID of the working folder - here the converted file and images will be stored.
+	 * @param string $path Path to the document to convert.
+	 * @param bool $splitHeader Heading level to split by.
+	 * @param bool $publishPages Whether the underlying pages should be published after import.
+	 * @param int $chosenFolderID ID of the working folder - here the converted file and images will be stored.
 	 */
 	public function importFrom($path, $splitHeader = false, $publishPages = false, $chosenFolderID = null) {
 
@@ -269,12 +316,13 @@ class DocumentImportInnerField extends UploadField {
 		$subdoc = new DOMDocument();
 		$subnode = $subdoc->createElement('body');
 		$node = $body->firstChild;
-		$sort = 0;
+		$sort = 1;
 		if($splitHeader == 1 || $splitHeader == 2) {
 			while($node) {
 				if($node instanceof DOMElement && $node->tagName == 'h' . $splitHeader) {
 					if($subnode->hasChildNodes()) {
-						$this->writeContent($subtitle, $subdoc, $subnode, $sort, $splitHeader, $publishPages);
+						$this->writeContent($subtitle, $subdoc, $subnode, $sort, $publishPages);
+						$sort++;
 					}
 
 					$subdoc = new DOMDocument();
@@ -287,11 +335,11 @@ class DocumentImportInnerField extends UploadField {
 				$node = $node->nextSibling;
 			}
 		} else {
-			$this->writeContent($subtitle, $subdoc, $body, $sort, true, $publishPages);
+			$this->writeContent($subtitle, $subdoc, $body, null, $publishPages);
 		}
 		
 		if($subnode->hasChildNodes()) {
-			$this->writeContent($subtitle, $subdoc, $subnode, $sort, false, $publishPages);
+			$this->writeContent($subtitle, $subdoc, $subnode, null, $publishPages);
 		}
 
 		foreach($this->unusedChildren as $child) {
@@ -310,8 +358,11 @@ class DocumentImportInnerField extends UploadField {
 
 		$sourcePage->write();
 	}
-
 }
+
+/**
+ * Utility class hiding the specifics of the document conversion process.
+ */
 class DocumentImportIFrameField_Importer {
 
 	protected $path;

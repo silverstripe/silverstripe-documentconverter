@@ -1,8 +1,12 @@
 <?php
+/**
+ * Provides a document import capability through the use of an external service.
+ * Includes several options fields, which are bundled together with an UploadField
+ * into a CompositeField.
+ */
 class DocumentImportField extends CompositeField {
-
 	/**
-	 * Holds a reference to the inner upload field (DocumentImportInnerField).
+	 * Reference to the inner upload field (DocumentImportInnerField).
 	 */
 	private $innerField = null;
 
