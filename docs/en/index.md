@@ -23,7 +23,7 @@ The interface will allow you to fine tune your import options. Import will start
   replace the existing children pages completely. The initial part of the document until the 
   first header occurence will be added to the main page instead.
 * *Keep the original document*: prevents the removal of the uploaded document. The document will become
-  available in the `Files` section of the CMS. Also, if the TOC has been enabled, the link will be
+  available in the *Files* section of the CMS. Also, if the TOC has been enabled, the link will be
   automatically added to the main page.
 * *Choose a folder to save this file*: asset directory to be used for storing the original document and the
   image files that came along with the document.
