@@ -78,14 +78,17 @@ class DocumentImportIFrameField extends FileIFrameField {
 					}
 					$page->Content = $content . '</ul>' . $doc->saveHTML();
 				}
-				
-				
-				if($this->addLinkToFile) $page->Content = '<a href="' . $file->Link() . '" title="download original document">download original document (' . $file->getSize() . ')</a>' . $page->Content;
-				$page->write();
-				if($this->PublishChildren) $page->doPublish();
+				$page->write();		
 			} 
 
 		}
+
+		if($this->addLinkToFile) {
+			$page->Content = '<a href="' . $file->Link() . '" title="download original document">download original document (' . $file->getSize() . ')</a>' . $page->Content;	
+			$page->write();
+		} 
+		
+		if($this->PublishChildren) $page->doPublish();
 
 		if(!SapphireTest::is_running_test()) {
 			echo "<script type='text/javascript'>
