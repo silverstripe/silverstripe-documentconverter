@@ -11,6 +11,7 @@ First of all it is important to know that the import process will replace the co
 ![](_images/interface.jpg)
 
 If you upload the document straight away the simplest scenario will be executed:
+
  * The content of the main page will be replaced by the imported markup
  * The original document will be removed afterwards
  * The page will remain in draft mode for you to preview the output
