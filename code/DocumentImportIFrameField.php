@@ -23,15 +23,15 @@ class DocumentImportIFrameField extends FileIFrameField {
 			if(isset($data['ChosenFolder'])) {
 				$folder = DataObject::get_by_id('Folder',(int)$data['ChosenFolder']);
 				if($folder) {
-					copy($_FILES['Upload']['tmp_name'], ASSETS_PATH . '/' . $folder->Name . '/' . str_replace(' ','-',$_FILES['Upload']['name']));
+					copy($_FILES['Upload']['tmp_name'], Director::baseFolder() . '/' . $folder->Filename . str_replace(' ','-',$_FILES['Upload']['name']));
 					$file->ParentID = (int)$data['ChosenFolder'];
 					self::$folder_id = $folder->ID;
 				} else {
-					copy($_FILES['Upload']['tmp_name'], ASSETS_PATH . '/' . str_replace(' ','-',$_FILES['Upload']['name']));
+					copy($_FILES['Upload']['tmp_name'], Director::baseFolder() . '/' . str_replace(' ','-',$_FILES['Upload']['name']));
 				}
 				
 			} else {
-				copy($_FILES['Upload']['tmp_name'], ASSETS_PATH . '/' . str_replace(' ','-',$_FILES['Upload']['name']));
+				copy($_FILES['Upload']['tmp_name'], Director::baseFolder() . '/' . str_replace(' ','-',$_FILES['Upload']['name']));
 			}
 			$file->write();
 			$this->addLinkToFile = true;
