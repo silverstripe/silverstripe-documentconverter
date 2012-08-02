@@ -65,9 +65,12 @@ class DocumentImportInnerField extends UploadField {
 			$preservedDocument = null;
 			if ($keepSource) $preservedDocument = $this->preserveSourceDocument($tmpfile, $chosenFolderID);
 
-			$this->importFrom($tmpfile['tmp_name'], $splitHeader, $publishPages, $chosenFolderID);
-
-			if ($includeTOC) $this->writeTOC($publishPages, $keepSource ? $preservedDocument : null);
+			$importResult = $this->importFrom($tmpfile['tmp_name'], $splitHeader, $publishPages, $chosenFolderID);
+			if (is_array($importResult) && isset($importResult['error'])) {
+				$return['error'] = $importResult['error'];
+			} else if ($includeTOC) {
+				$this->writeTOC($publishPages, $keepSource ? $preservedDocument : null);
+			}
 		}
 
 		$response = new SS_HTTPResponse(Convert::raw2json(array($return)));
@@ -229,6 +232,10 @@ class DocumentImportInnerField extends UploadField {
 		$importer = new $importerClass($path, $chosenFolderID);
 		$content = $importer->import();
 
+		if (is_array($content) && isset($content['error'])) {
+			return $content;
+		}
+
 		// you need Tidy, i.e. port install php5-tidy
 		$tidy = new Tidy();
 		$tidy->parseString($content, array('output-xhtml' => true), 'utf8');
@@ -311,6 +318,9 @@ class DocumentImportInnerField extends UploadField {
 		foreach($sourcePage->Children() as $child) {
 			$this->unusedChildren[$child->ID] = $child;
 		}
+
+		set_error_handler('DocumentImportInnerField_error_handler');
+		global $DocumentImportInnerfield_error;
 		
 		$subtitle = null;
 		$subdoc = new DOMDocument();
@@ -318,7 +328,7 @@ class DocumentImportInnerField extends UploadField {
 		$node = $body->firstChild;
 		$sort = 1;
 		if($splitHeader == 1 || $splitHeader == 2) {
-			while($node) {
+			while($node && !$DocumentImportInnerfield_error) {
 				if($node instanceof DOMElement && $node->tagName == 'h' . $splitHeader) {
 					if($subnode->hasChildNodes()) {
 						$this->writeContent($subtitle, $subdoc, $subnode, $sort, $publishPages);
@@ -338,8 +348,13 @@ class DocumentImportInnerField extends UploadField {
 			$this->writeContent($subtitle, $subdoc, $body, null, $publishPages);
 		}
 		
-		if($subnode->hasChildNodes()) {
+		if($subnode->hasChildNodes() && !$DocumentImportInnerfield_error) {
 			$this->writeContent($subtitle, $subdoc, $subnode, null, $publishPages);
+		}
+
+		restore_error_handler();
+		if ($DocumentImportInnerfield_error) {
+			return array('error' => $DocumentImportInnerfield_error);
 		}
 
 		foreach($this->unusedChildren as $child) {
@@ -422,10 +437,18 @@ class DocumentImportIFrameField_Importer {
 
 		$out = fopen($outzip, 'w');
 		curl_setopt($ch, CURLOPT_FILE, $out);
-		curl_exec($ch);
+		$returnValue = curl_exec($ch);
 		curl_close($ch);
 		fclose($out);
 		chmod($outzip, 0777);
+
+		if (!$returnValue) {
+			return array('error' => _t(
+				'DocumentConverter.SERVERUNREACHABLE',
+				'Could not contact document conversion server. Please contact your system administrator.',
+				'Document Converter process Word documents into HTML.'
+			));
+		}
 
 		// extract the converted document into assets
 		// you need php zip, i.e. port install php5-zip
@@ -439,6 +462,14 @@ class DocumentImportIFrameField_Importer {
 		unlink($outname);
 		unlink($outzip);
 
+		if (!file_exists(ASSETS_PATH . $folderName . '/index.html')) {
+			return array('error' =>  _t(
+				'DocumentConverter.PROCESSFAILED',
+				'Could not process document, please double-check you uploaded a .doc or .docx format.',
+				'Document Converter process Word documents into HTML.'
+			));
+		}
+
 		$content = file_get_contents(ASSETS_PATH . $folderName . '/index.html');
 
 		unlink(ASSETS_PATH . $folderName . '/index.html');
@@ -446,4 +477,17 @@ class DocumentImportIFrameField_Importer {
 		return $content;
 	}
 
+}
+
+static $DocumentImportInnerfield_error = '';
+
+function DocumentImportInnerField_error_handler($errno, $errstr, $errfile, $errline) {
+	global $DocumentImportInnerfield_error;
+	$DocumentImportInnerfield_error = _t(
+		'DocumentConverter.PROCESSFAILED',
+		'Could not process document, please double-check you uploaded a .doc or .docx format.',
+		'Document Converter process Word documents into HTML.'
+	);
+
+	return true;
 }
