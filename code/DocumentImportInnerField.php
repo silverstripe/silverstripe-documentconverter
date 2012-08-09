@@ -427,8 +427,8 @@ class DocumentImportIFrameField_Importer {
 			CURLOPT_USERPWD => sprintf('%s:%s', self::get_docvert_username(), self::get_docvert_password()),
 			CURLOPT_POST => 1,
 			CURLOPT_POSTFIELDS => array('file' => '@' . $this->path),
-			CURLOPT_CONNECTTIMEOUT => 5,
-			CURLOPT_TIMEOUT => 20,
+			CURLOPT_CONNECTTIMEOUT => 25,
+			CURLOPT_TIMEOUT => 100,
 		));
 
 		$folderName = ($this->chosenFolderID) ? '/'.DataObject::get_by_id('Folder', $this->chosenFolderID)->Name : '';
