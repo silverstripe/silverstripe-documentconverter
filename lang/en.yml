@@ -1,4 +1,4 @@
 en:
   DocumentConverter:
-    SERVERUNREACHABLE: Could not contact document conversion server. Please contact your system administrator
-    PROCESSFAILED: Could not process document, please double-check you uploaded a .doc or .docx format
+    SERVERUNREACHABLE: Could not contact document conversion server. Please try again later or contact your system administrator.
+    PROCESSFAILED: Could not process document, please double-check you uploaded a .doc or .docx format.

@@ -445,7 +445,7 @@ class DocumentImportIFrameField_Importer {
 		if (!$returnValue) {
 			return array('error' => _t(
 				'DocumentConverter.SERVERUNREACHABLE',
-				'Could not contact document conversion server. Please contact your system administrator.',
+				'Could not contact document conversion server. Please try again later or contact your system administrator.',
 				'Document Converter process Word documents into HTML.'
 			));
 		}
