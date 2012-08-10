@@ -9,6 +9,7 @@ jQuery.entwine('documentimport', function($) {
 			var error = responseJSON[0].error;
 			if (!error) {
 				$('.cms-container').entwine('.ss').loadPanel(document.location.href, null, {reload: Math.random()});
+				$('.cms-tree').entwine('.ss.tree').updateNodesFromServer([$('#Form_EditForm_ID').val()]);
 			}
 		},
 
