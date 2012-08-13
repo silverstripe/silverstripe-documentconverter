@@ -27,11 +27,11 @@ class DocumentImportIFrameField extends FileIFrameField {
 					$file->ParentID = (int)$data['ChosenFolder'];
 					self::$folder_id = $folder->ID;
 				} else {
-					copy($_FILES['Upload']['tmp_name'], Director::baseFolder() . '/' . str_replace(' ','-',$_FILES['Upload']['name']));
+					copy($_FILES['Upload']['tmp_name'], ASSETS_PATH . '/' . str_replace(' ','-',$_FILES['Upload']['name']));
 				}
 				
 			} else {
-				copy($_FILES['Upload']['tmp_name'], Director::baseFolder() . '/' . str_replace(' ','-',$_FILES['Upload']['name']));
+				copy($_FILES['Upload']['tmp_name'], ASSETS_PATH . '/' . str_replace(' ','-',$_FILES['Upload']['name']));
 			}
 			$file->write();
 			$this->addLinkToFile = true;
@@ -88,6 +88,21 @@ class DocumentImportIFrameField extends FileIFrameField {
 			$page->write();
 		} 
 		
+		if(!isset($page)) $page = $this->form->getRecord(); 
+		if($page->Children() && $page->Children()->Count() > 0) {
+			$children = $page->Children();
+			$totalChildren = $children->Count();
+			$i = 0;
+			foreach($children as $c) { 
+				if($i < $totalChildren - 1) {
+					$c->Content = $c->Content . '<p><a href="'.$children->items[$i+1]->Link().'" title="next page">'.$children->items[$i+1]->Title.'</a></p>';
+					$c->write();
+				}
+				$i++;
+			}
+			
+		}
+
 		if($this->PublishChildren) $page->doPublish();
 
 		if(!SapphireTest::is_running_test()) {
@@ -322,9 +337,9 @@ class DocumentImportIFrameField extends FileIFrameField {
 		}
 		
 		$subtitle = null;
-		$subdoc = new DOMDocument();
-		$subnode = $subdoc->createElement('body');
-		$node = $body->firstChild;
+		$orginalSubdoc = $subdoc = new DOMDocument();
+		$OriginalSubnode = $subnode = $subdoc->createElement('body');
+		$originalNode = $node = $body->firstChild;
 		$sort = 0;
 		if($splitHeader == 1 || $splitHeader == 2) {
 			while($node) {
@@ -362,6 +377,9 @@ class DocumentImportIFrameField extends FileIFrameField {
 			$clone->delete();
 
 			Versioned::reading_stage($origStage);
+		}
+		if(!$sourcePage->Content) {
+			$this->writeContent($subtitle, $orginalSubdoc, $body, $sort, false);
 		}
 
 		$sourcePage->write();
