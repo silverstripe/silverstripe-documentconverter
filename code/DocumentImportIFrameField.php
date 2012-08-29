@@ -95,7 +95,7 @@ class DocumentImportIFrameField extends FileIFrameField {
 			$i = 0;
 			foreach($children as $c) { 
 				if($i < $totalChildren - 1) {
-					$c->Content = $c->Content . '<p><a href="'.$children->items[$i+1]->Link().'" title="next page">'.$children->items[$i+1]->Title.'</a></p>';
+					$c->Content = $c->Content . '<p><a href="'.$children->items[$i+1]->Link().'" title="next page">Next page: '.$children->items[$i+1]->Title.'</a></p>';
 					$c->write();
 				}
 				$i++;
@@ -126,7 +126,7 @@ class DocumentImportIFrameField extends FileIFrameField {
 			new FieldSet(
 				new HeaderField('FileSelectHeader', 'Select the word document to import'),
 				new HeaderField('FileWarningHeader', 'Warning: import will remove all content and subpages of this page', 4),
-				new DropdownField('SplitHeader', 'Split document into pages', array(0 => 'no', 1 => 'for each heading 1', 2 => 'for each heading 2')),
+				new DropdownField('SplitHeader', 'Split document into pages', array(0 => 'no', 1 => 'for each heading 1', 2 => 'for each heading 2', 3 => 'for each heading 3')),
 				$filefield,
 				new CheckboxField('KeepSource', 'Keep document and add a link to it on this page'),
 				new TreeDropdownField('ChosenFolder','Choose a folder to save this file', 'Folder'),
@@ -328,7 +328,7 @@ class DocumentImportIFrameField extends FileIFrameField {
 			foreach ($nodes as $node) { if ($node->parentNode) $node->parentNode->removeChild($node); }
 		}
 
-		// Now split the document into portions by H1
+		// Now split the document into portions by H1, H2 or H3
 		$body = $doc->getElementsByTagName('body')->item(0);
 
 		$this->unusedChildren = array();
@@ -341,9 +341,10 @@ class DocumentImportIFrameField extends FileIFrameField {
 		$OriginalSubnode = $subnode = $subdoc->createElement('body');
 		$originalNode = $node = $body->firstChild;
 		$sort = 0;
-		if($splitHeader == 1 || $splitHeader == 2) {
+		if($splitHeader == 1 || $splitHeader == 2 || $splitHeader == 3) {
 			while($node) {
 				if($node instanceof DOMElement && $node->tagName == 'h' . $splitHeader) {
+					
 					if($subnode->hasChildNodes()) {
 						$this->writeContent($subtitle, $subdoc, $subnode, $sort);
 					}
@@ -357,12 +358,16 @@ class DocumentImportIFrameField extends FileIFrameField {
 
 				$node = $node->nextSibling;
 			}
+			if($subnode->hasChildNodes()) {
+				$this->writeContent($subtitle, $subdoc, $subnode, $sort);
+			}
+			// if this page does not have children it means we didn't find a node with the H we were looking for, so we default to write the entire document content
+			// into this page content
+			if(!$sourcePage->Children()->Count()) {
+				$this->writeContent(null, $orginalSubdoc, $body, $sort, true);
+			}
 		} else {
 			$this->writeContent($subtitle, $subdoc, $body, $sort, true);
-		}
-		
-		if($subnode->hasChildNodes()) {
-			$this->writeContent($subtitle, $subdoc, $subnode, $sort);
 		}
 
 		foreach($this->unusedChildren as $child) {
@@ -378,9 +383,7 @@ class DocumentImportIFrameField extends FileIFrameField {
 
 			Versioned::reading_stage($origStage);
 		}
-		if(!$sourcePage->Content) {
-			$this->writeContent($subtitle, $orginalSubdoc, $body, $sort, false);
-		}
+
 
 		$sourcePage->write();
 	}
