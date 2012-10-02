@@ -283,12 +283,13 @@ class DocumentImportInnerField extends UploadField {
 			}
 		}
 
-		// Strip styles, classes
+		// Strip style, class, lang attributes.
 		$els = $doc->getElementsByTagName('*');
 		for ($i = 0; $i < $els->length; $i++) {
 			$el = $els->item($i);
 			$el->removeAttribute('class');
 			$el->removeAttribute('style');
+			$el->removeAttribute('lang');
 		}
 
 		$els = $doc->getElementsByTagName('*');
