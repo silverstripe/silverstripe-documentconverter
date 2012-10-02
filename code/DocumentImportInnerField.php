@@ -86,23 +86,10 @@ class DocumentImportInnerField extends UploadField {
 	 * @return File Stored file.
 	 */
 	protected function preserveSourceDocument($tmpfile, $chosenFolderID = null) {
+		$upload = new Upload();
+
 		$file = new File();
-		$file->Name = $tmpfile['name'];
-		if($chosenFolderID) {
-			// Store in the selected folder.
-			$folder = DataObject::get_by_id('Folder', $chosenFolderID);
-			if($folder) {
-				copy($tmpfile['tmp_name'], ASSETS_PATH . '/' . $folder->Name . '/' . str_replace(' ','-',$tmpfile['name']));
-				$file->ParentID = $chosenFolderID;
-			} else {
-				copy($tmpfile['tmp_name'], ASSETS_PATH . '/' . str_replace(' ','-',$tmpfile['name']));
-			}
-			
-		} else {
-			// Store in the root of the asset folder.
-			copy($tmpfile['tmp_name'], ASSETS_PATH . '/' . str_replace(' ','-',$tmpfile['name']));
-		}
-		$file->write();
+		$upload->loadIntoFile($tmpfile, $file, $chosenFolderID);
 
 		$page = $this->form->getRecord();
 		$page->ImportedFromFileID = $file->ID;
