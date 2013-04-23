@@ -1,0 +1,9 @@
+{
+	"name": "silverstripe/documentconverter",
+	"description": "Imports OpenOffice-compatible files (doc, docx, etc) into SilverStripe pages and content.",
+	"type": "silverstripe-module",
+	"require": {
+		"silverstripe/cms": ">=3.0",
+		"silverstripe/framework": ">=3.0"
+	}
+}
