@@ -1,14 +1,10 @@
 <?php
 
 class DocumentConverterDecorator extends DataExtension {
-	
-	function extraStatics($class = null, $extension = null) {
-		return array(
-			'has_one' => array(
-				'ImportedFromFile' => 'File'
-			)
-		);
-	}
+
+	public static $has_one = array(
+		'ImportedFromFile' => 'File'
+	);
 
 	function updateCMSFields(FieldList $fields) {
 		/*
