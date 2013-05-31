@@ -426,11 +426,12 @@ class DocumentImportIFrameField_Importer {
 		$out = fopen($outzip, 'w');
 		curl_setopt($ch, CURLOPT_FILE, $out);
 		$returnValue = curl_exec($ch);
+		$status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 		curl_close($ch);
 		fclose($out);
 		chmod($outzip, 0777);
 
-		if (!$returnValue) {
+		if (!$returnValue || ($status != 200)) {
 			return array('error' => _t(
 				'DocumentConverter.SERVERUNREACHABLE',
 				'Could not contact document conversion server. Please try again later or contact your system administrator.',
