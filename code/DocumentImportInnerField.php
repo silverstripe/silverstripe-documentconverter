@@ -149,7 +149,7 @@ class DocumentImportInnerField extends UploadField {
 
 	protected function getBodyText($doc, $node) {
 		// Build a new doc
-		$htmldoc = new DOMDocument(); 
+		$htmldoc = new DOMDocument();
 		// Create the html element
 		$html = $htmldoc->createElement('html'); 
 		$htmldoc->appendChild($html);
@@ -160,7 +160,7 @@ class DocumentImportInnerField extends UploadField {
 		$text = $htmldoc->saveHTML();
 		$text = preg_replace('/^.*<body>/', '', $text);
 		$text = preg_replace('/<\/body>.*$/', '', $text);
-		
+
 		return $text;
 	}
 
@@ -235,12 +235,38 @@ class DocumentImportInnerField extends UploadField {
 
 		$xpath = new DOMXPath($doc);
 
-		// Fix img links to be relative to assets
+		// make sure any images are added as Image records with a relative link to assets
 		$folderName = ($chosenFolderID) ? DataObject::get_by_id('Folder', $chosenFolderID)->Name : '';
 		$imgs = $xpath->query('//img');
 		for($i = 0; $i < $imgs->length; $i++) {
 			$img = $imgs->item($i);
-			$img->setAttribute('src', 'assets/'. $folderName . '/' . $img->getAttribute('src'));
+			$originalPath = 'assets/' . $folderName . '/' . $img->getAttribute('src');
+
+			// get the name of the file, filtered, and check for any existing records
+			// suffixing them if they already exist (setName() in File won't do this
+			// for us)
+			// we do this incase someone is linking to the existing file, we don't
+			// want to overwrite anything that might be in use!
+			$info = pathinfo(FileNameFilter::create()->filter(basename($originalPath)));
+			$name = $info['basename'];
+			$suffix = 1;
+			while(DataObject::get_one("File", "\"Name\" = '" . Convert::raw2sql($name) 
+					. "' AND \"ParentID\" = " . (int) $chosenFolderID)) {
+
+				$suffix++;
+				$name = $info['filename'] . '-' . $suffix . '.' . $info['extension'];
+			}
+
+			$image = new Image();
+			$image->ParentID = (int) $chosenFolderID;
+			$image->Name = $name;
+			$image->write();
+
+			// the filename might've been filtered by File::setName(), so let's make sure the file is moved
+			// to the place that the Image record expects it to be.
+			rename(Director::getAbsFile($originalPath), Director::getAbsFile($image->getFilename()));
+
+			$img->setAttribute('src', $image->getFilename());
 		}
 
 		$remove_rules = array(
