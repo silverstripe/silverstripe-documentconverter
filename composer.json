@@ -3,7 +3,7 @@
 	"description": "Imports OpenOffice-compatible files (doc, docx, etc) into SilverStripe pages and content.",
 	"type": "silverstripe-module",
 	"require": {
-		"silverstripe/cms": ">=3.1",
-		"silverstripe/framework": ">=3.1"
+		"silverstripe/cms": "~3.1",
+		"silverstripe/framework": "~3.1"
 	}
 }
