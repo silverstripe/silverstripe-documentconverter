@@ -1,4 +1,5 @@
 jQuery.entwine('documentimport', function($) {
+
 	$('div.documentimport').entwine({
 		/**
 		 * Trigger page reload after the document has been imported.
@@ -6,10 +7,17 @@ jQuery.entwine('documentimport', function($) {
 		onfileuploaddone: function(e, data) {
 			var responseText = data.jqXHR.responseText;
 			var responseJSON = JSON.parse(responseText);
+
 			var error = responseJSON[0].error;
+
 			if (!error) {
-				$('.cms-container').entwine('.ss').loadPanel(document.location.href, null, {reload: Math.random()});
-				$('.cms-tree').entwine('.ss.tree').updateNodesFromServer([$('#Form_EditForm_ID').val()]);
+				// Update the tree - LeftAndMain.Tree/updateNodesFromServer doesn't handle children being added or removed
+				var pageID = $('#Form_EditForm_ID').val();
+				$('.cms-tree').jstree('refresh', $('#record-'+pageID));
+
+				// Then reload the page, suppressing change warnings. Ideally this should wait till tree refresh done.
+				$('.cms-edit-form').removeClass('changed');
+				$('.cms-container').entwine('.ss').loadPanel(document.location.href, null, null, true);
 			}
 		},
 
@@ -19,6 +27,7 @@ jQuery.entwine('documentimport', function($) {
 		onfileuploadsubmit: function (e, data) {
 			var form = this.closest('form');
 			var field = this.closest('.documentimport');
+
 			data.formData = $.extend(data.formData, {
 				// Re-add the original fields (this call unfortunately overrides the orignal formData option).
 				SecurityID: form.find(':input[name=SecurityID]').val(),

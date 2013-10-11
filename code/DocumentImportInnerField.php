@@ -26,6 +26,8 @@
  */
 class DocumentImportInnerField extends UploadField {
 
+	private static $allowed_actions = array('upload');
+
 	public static $importer_class = 'DocumentImportIFrameField_Importer';
 
 	/**
