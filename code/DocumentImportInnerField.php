@@ -26,6 +26,8 @@
  */
 class DocumentImportInnerField extends UploadField {
 
+	private static $allowed_actions = array('upload');
+
 	public static $importer_class = 'DocumentImportIFrameField_Importer';
 
 	/**
@@ -223,15 +225,19 @@ class DocumentImportInnerField extends UploadField {
 			return $content;
 		}
 
-		// you need Tidy, i.e. port install php5-tidy
+		// Clean up with tidy (requires tidy module)
 		$tidy = new Tidy();
 		$tidy->parseString($content, array('output-xhtml' => true), 'utf8');
 		$tidy->cleanRepair();
-		
+
+		// Add a header that makes DOMDocument UTF-8 safe
+		$html = str_replace('<head>', '<head><meta http-equiv="content-type" content="text/html; charset=utf-8">', $tidy);
+
+		// Load in the HTML
 		$doc = new DOMDocument();
 		$doc->strictErrorChecking = false;
 		libxml_use_internal_errors(true);
-		$doc->loadHTML('' . $tidy);
+		$doc->loadHTML($html);
 
 		$xpath = new DOMXPath($doc);
 
