@@ -1,0 +1,4 @@
+mi:
+  DocumentConverter:
+    SERVERUNREACHABLE: Kāore i taea te whakapā ki te tūmau huri tuhinga. Me ngana anō ā muri ake, ka whakapā rānei ki tō kaiwhakahaere pūnaha.
+    PROCESSFAILED: Kāore i taea te tukatuka te tuhinga, whakatūturu pūtia kua tukuna atu he hōputu .doc, .docx rānei.
