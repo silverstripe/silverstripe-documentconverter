@@ -35,3 +35,10 @@ The interface will allow you to fine tune your import options. Import will start
   the conversion outcome is advised before publishing, so avoid this option unless you are sure what will 
   be produced.
 
+## Contributing
+
+### Translations
+
+Translations of the natural language strings are managed through a third party translation interface, transifex.com. Newly added strings will be periodically uploaded there for translation, and any new translations will be merged back to the project source code.
+
+Please use [https://www.transifex.com/projects/p/silverstripe-documentconverter](https://www.transifex.com/projects/p/silverstripe-documentconverter) to contribute translations, rather than sending pull requests with YAML files.
