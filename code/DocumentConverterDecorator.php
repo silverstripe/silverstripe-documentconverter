@@ -16,6 +16,10 @@ class DocumentConverterDecorator extends DataExtension {
 			))->setHeadingLevel(4)
 		);
 		 */
+		$fields->findOrMakeTab(
+			'Root.Import',
+			_t('DocumentConverterDecorator.ImportTab', 'Import')
+		);
 		$fields->addFieldToTab('Root.Import', new DocumentImportField());
 	}
 }
