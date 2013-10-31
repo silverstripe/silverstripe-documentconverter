@@ -67,7 +67,7 @@ class DocumentImportInnerField extends UploadField {
 			$preservedDocument = null;
 			if ($keepSource) $preservedDocument = $this->preserveSourceDocument($tmpfile, $chosenFolderID);
 
-			$importResult = $this->importFrom($tmpfile['tmp_name'], $splitHeader, $publishPages, $chosenFolderID);
+			$importResult = $this->importFrom($tmpfile, $splitHeader, $publishPages, $chosenFolderID);
 			if (is_array($importResult) && isset($importResult['error'])) {
 				$return['error'] = $importResult['error'];
 			} else if ($includeTOC) {
@@ -209,16 +209,16 @@ class DocumentImportInnerField extends UploadField {
 	 * Imports a document at a certain path onto the current page and writes it.
 	 * CAUTION: Overwrites any existing content on the page!
 	 *
-	 * @param string $path Path to the document to convert.
+	 * @param array $tmpFile Array of file details.
 	 * @param bool $splitHeader Heading level to split by.
 	 * @param bool $publishPages Whether the underlying pages should be published after import.
 	 * @param int $chosenFolderID ID of the working folder - here the converted file and images will be stored.
 	 */
-	public function importFrom($path, $splitHeader = false, $publishPages = false, $chosenFolderID = null) {
+	public function importFrom($tmpFile, $splitHeader = false, $publishPages = false, $chosenFolderID = null) {
 
 		$sourcePage = $this->form->getRecord();
 		$importerClass = self::$importer_class;
-		$importer = new $importerClass($path, $chosenFolderID);
+		$importer = new $importerClass($tmpFile, $chosenFolderID);
 		$content = $importer->import();
 
 		if (is_array($content) && isset($content['error'])) {
@@ -400,8 +400,8 @@ class DocumentImportInnerField extends UploadField {
  */
 class DocumentImportIFrameField_Importer {
 
-	protected $path;
-	
+	protected $tmpFile;
+
 	protected $chosenFolderID;
 
 	protected static $docvert_username;
@@ -434,19 +434,30 @@ class DocumentImportIFrameField_Importer {
 		return self::$docvert_url;
 	}
 
-	public function __construct($path, $chosenFolderID = null) {
-		$this->path = $path;
+	public function __construct($tmpFile, $chosenFolderID = null) {
+		$this->tmpFile = $tmpFile;
 		$this->chosenFolderID = $chosenFolderID;
 	}
 
 	public function import() {
 		$ch = curl_init();
 
+		$name = $this->tmpFile['name'];
+		$path = $this->tmpFile['tmp_name'];
+		$type = $this->tmpFile['type'];
+
+		// PHP 5.5+ introduced CURLFile which makes the '@/path/to/file' syntax deprecated.
+		if(class_exists('CURLFile')) {
+			$file = new CURLFile($path, $type, $name);
+		} else {
+			$file = '@' . $path;
+		}
+
 		curl_setopt_array($ch, array(
 			CURLOPT_URL => self::get_docvert_url(),
 			CURLOPT_USERPWD => sprintf('%s:%s', self::get_docvert_username(), self::get_docvert_password()),
 			CURLOPT_POST => 1,
-			CURLOPT_POSTFIELDS => array('file' => '@' . $this->path),
+			CURLOPT_POSTFIELDS => array('file' => $file),
 			CURLOPT_CONNECTTIMEOUT => 25,
 			CURLOPT_TIMEOUT => 100,
 		));
