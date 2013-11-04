@@ -247,30 +247,19 @@ class DocumentImportInnerField extends UploadField {
 		for($i = 0; $i < $imgs->length; $i++) {
 			$img = $imgs->item($i);
 			$originalPath = 'assets/' . $folderName . '/' . $img->getAttribute('src');
+			$name = FileNameFilter::create()->filter(basename($originalPath));
 
-			// get the name of the file, filtered, and check for any existing records
-			// suffixing them if they already exist (setName() in File won't do this
-			// for us)
-			// we do this incase someone is linking to the existing file, we don't
-			// want to overwrite anything that might be in use!
-			$info = pathinfo(FileNameFilter::create()->filter(basename($originalPath)));
-			$name = $info['basename'];
-			$suffix = 1;
-			while(DataObject::get_one("File", "\"Name\" = '" . Convert::raw2sql($name) 
-					. "' AND \"ParentID\" = " . (int) $chosenFolderID)) {
-
-				$suffix++;
-				$name = $info['filename'] . '-' . $suffix . '.' . $info['extension'];
+			$image = Image::get()->filter(array('Name' => $name, 'ParentID' => (int) $chosenFolderID))->first();
+			if(!($image && $image->exists())) {
+				$image = new Image();
+				$image->ParentID = (int) $chosenFolderID;
+				$image->Name = $name;
+				$image->write();
 			}
 
-			$image = new Image();
-			$image->ParentID = (int) $chosenFolderID;
-			$image->Name = $name;
-			$image->write();
-
-			// the filename might've been filtered by File::setName(), so let's make sure the file is moved
-			// to the place that the Image record expects it to be.
-			rename(Director::getAbsFile($originalPath), Director::getAbsFile($image->getFilename()));
+			// make sure it's put in place correctly so Image record knows where it is.
+			// e.g. in the case of underscores being renamed to dashes.
+			@rename(Director::getAbsFile($originalPath), Director::getAbsFile($image->getFilename()));
 
 			$img->setAttribute('src', $image->getFilename());
 		}
