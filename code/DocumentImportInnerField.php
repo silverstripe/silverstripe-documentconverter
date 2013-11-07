@@ -28,7 +28,7 @@ class DocumentImportInnerField extends UploadField {
 
 	private static $allowed_actions = array('upload');
 
-	public static $importer_class = 'DocumentImportIFrameField_Importer';
+	private static $importer_class = 'DocumentImportIFrameField_Importer';
 
 	/**
 	 * Process the document immediately upon upload.
@@ -67,7 +67,7 @@ class DocumentImportInnerField extends UploadField {
 			$preservedDocument = null;
 			if ($keepSource) $preservedDocument = $this->preserveSourceDocument($tmpfile, $chosenFolderID);
 
-			$importResult = $this->importFrom($tmpfile['tmp_name'], $splitHeader, $publishPages, $chosenFolderID);
+			$importResult = $this->importFromPOST($tmpfile, $splitHeader, $publishPages, $chosenFolderID);
 			if (is_array($importResult) && isset($importResult['error'])) {
 				$return['error'] = $importResult['error'];
 			} else if ($includeTOC) {
@@ -209,16 +209,22 @@ class DocumentImportInnerField extends UploadField {
 	 * Imports a document at a certain path onto the current page and writes it.
 	 * CAUTION: Overwrites any existing content on the page!
 	 *
-	 * @param string $path Path to the document to convert.
+	 * @param array $tmpFile Array as received from PHP's POST upload.
 	 * @param bool $splitHeader Heading level to split by.
 	 * @param bool $publishPages Whether the underlying pages should be published after import.
 	 * @param int $chosenFolderID ID of the working folder - here the converted file and images will be stored.
 	 */
-	public function importFrom($path, $splitHeader = false, $publishPages = false, $chosenFolderID = null) {
+	public function importFromPOST($tmpFile, $splitHeader = false, $publishPages = false, $chosenFolderID = null) {
+
+		$fileDescriptor = array(
+			'name' => $tmpFile['name'],
+			'path' => $tmpFile['tmp_name'],
+			'mimeType' => $tmpFile['type']
+		);
 
 		$sourcePage = $this->form->getRecord();
-		$importerClass = self::$importer_class;
-		$importer = new $importerClass($path, $chosenFolderID);
+		$importerClass = Config::inst()->get('DocumentImportInnerField', 'importer_class');
+		$importer = Injector::inst()->create($importerClass, $fileDescriptor, $chosenFolderID);
 		$content = $importer->import();
 
 		if (is_array($content) && isset($content['error'])) {
@@ -389,8 +395,14 @@ class DocumentImportInnerField extends UploadField {
  */
 class DocumentImportIFrameField_Importer {
 
-	protected $path;
-	
+	/**
+	 * Associative array of:
+	 * - name: the full name of the file including the extension.
+	 * - path: the path to the file on the local filesystem.
+	 * - mimeType
+	 */
+	protected $fileDescriptor;
+
 	protected $chosenFolderID;
 
 	protected static $docvert_username;
@@ -423,19 +435,30 @@ class DocumentImportIFrameField_Importer {
 		return self::$docvert_url;
 	}
 
-	public function __construct($path, $chosenFolderID = null) {
-		$this->path = $path;
+	public function __construct($fileDescriptor, $chosenFolderID = null) {
+		$this->fileDescriptor = $fileDescriptor;
 		$this->chosenFolderID = $chosenFolderID;
 	}
 
 	public function import() {
 		$ch = curl_init();
 
+		// PHP 5.5+ introduced CURLFile which makes the '@/path/to/file' syntax deprecated.
+		if(class_exists('CURLFile')) {
+			$file = new CURLFile(
+				$this->fileDescriptor['path'],
+				$this->fileDescriptor['mimeType'],
+				$this->fileDescriptor['name']
+			);
+		} else {
+			$file = '@' . $this->fileDescriptor['path'];
+		}
+
 		curl_setopt_array($ch, array(
 			CURLOPT_URL => self::get_docvert_url(),
 			CURLOPT_USERPWD => sprintf('%s:%s', self::get_docvert_username(), self::get_docvert_password()),
 			CURLOPT_POST => 1,
-			CURLOPT_POSTFIELDS => array('file' => '@' . $this->path),
+			CURLOPT_POSTFIELDS => array('file' => $file),
 			CURLOPT_CONNECTTIMEOUT => 25,
 			CURLOPT_TIMEOUT => 100,
 		));
