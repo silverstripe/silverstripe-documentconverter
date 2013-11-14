@@ -23,13 +23,50 @@ class DocumentImportField extends CompositeField {
 		Requirements::javascript('documentconverter/javascript/DocumentImportField.js');
 
 		$fields = new FieldList(array(
-			new HeaderField('FileWarningHeader', 'Warning: import will remove all content and subpages of this page.', 4),
-			$splitHeader = new DropdownField('DocumentImportField-SplitHeader', 'Split document into pages', array(0 => 'no', 1 => 'for each heading 1', 2 => 'for each heading 2')),
-			$keepSource = new CheckboxField('DocumentImportField-KeepSource', 'Keep the original document. Adds a link to it on TOC, if enabled.'),
-			$chosenFolderID = new TreeDropdownField('DocumentImportField-ChosenFolderID','Choose a folder to save this file', 'Folder'),
-			$includeTOC = new CheckboxField('DocumentImportField-IncludeTOC', 'Replace this page with a Table of Contents.'),
-			$publishPages = new CheckboxField('DocumentImportField-PublishPages', 'Publish modified pages (not recommended unless you are sure about the conversion outcome)'),
-			$this->innerField = new DocumentImportInnerField('ImportedFromFile', 'Import content from a word document'),
+			new HeaderField(
+				'FileWarningHeader', 
+				_t(
+					'DocumentImportField.FileWarningHeader',
+					'Warning: import will remove all content and subpages of this page.'
+				), 
+				4
+			),
+			$splitHeader = new DropdownField(
+				'DocumentImportField-SplitHeader', 
+				'Split document into pages', 
+				array(
+					0 => _t('DocumentImportField.No','no'), 
+					1 => _t('DocumentImportField.EachH1','for each heading 1'), 
+					2 => _t('DocumentImportField.EachH2','for each heading 2')
+				)
+			),
+			$keepSource = new CheckboxField(
+				'DocumentImportField-KeepSource', 
+				_t(
+					'DocumentImportField.KeepSource',
+					'Keep the original document. Adds a link to it on TOC, if enabled.'
+				)
+			),
+			$chosenFolderID = new TreeDropdownField(
+				'DocumentImportField-ChosenFolderID',
+				_t('DocumentImportField.ChooseFolder', 'Choose a folder to save this file'), 
+				'Folder'
+			),
+			$includeTOC = new CheckboxField(
+				'DocumentImportField-IncludeTOC', 
+				_t('DocumentImportField.IncludeTOC', 'Replace this page with a Table of Contents.')
+			),
+			$publishPages = new CheckboxField(
+				'DocumentImportField-PublishPages', 
+				_t(
+					'DocumentImportField.publishPages',
+					'Publish modified pages (not recommended unless you are sure about the conversion outcome)'
+				)
+			),
+			$this->innerField = new DocumentImportInnerField(
+				'ImportedFromFile', 
+				_t('DocumentImportField.ImportedFromFile','Import content from a word document')
+			),
 		));
 
 		// Prevent the warning popup that appears when navigating away from the page.

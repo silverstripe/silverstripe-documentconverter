@@ -4,6 +4,16 @@ en:
     SERVERUNREACHABLE: 'Could not contact document conversion server. Please try again later or contact your system administrator.'
   DocumentConverterDecorator:
     ImportTab: Import
+  DocumentImportField:
+    ChooseFolder: 'Choose a folder to save this file'
+    EachH1: 'for each heading 1'
+    EachH2: 'for each heading 2'
+    FileWarningHeader: 'Warning: import will remove all content and subpages of this page.'
+    ImportedFromFile: 'Import content from a word document'
+    IncludeTOC: 'Replace this page with a Table of Contents.'
+    KeepSource: 'Keep the original document. Adds a link to it on TOC, if enabled.'
+    No: no
+    publishPages: 'Publish modified pages (not recommended unless you are sure about the conversion outcome)'
   FileIFrameField:
     ATTACHONCESAVED2: 'Files can be attached once you have saved the record for the first time.'
   UploadField:
