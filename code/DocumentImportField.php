@@ -33,7 +33,10 @@ class DocumentImportField extends CompositeField {
 			),
 			$splitHeader = new DropdownField(
 				'DocumentImportField-SplitHeader', 
-				'Split document into pages', 
+				_t(
+					'DocumentImportField.SplitHeader',
+					'Split document into pages'
+				), 
 				array(
 					0 => _t('DocumentImportField.No','no'), 
 					1 => _t('DocumentImportField.EachH1','for each heading 1'), 

@@ -13,6 +13,7 @@ en:
     IncludeTOC: 'Replace this page with a Table of Contents.'
     KeepSource: 'Keep the original document. Adds a link to it on TOC, if enabled.'
     No: no
+    SplitHeader: 'Split document into pages'
     publishPages: 'Publish modified pages (not recommended unless you are sure about the conversion outcome)'
   FileIFrameField:
     ATTACHONCESAVED2: 'Files can be attached once you have saved the record for the first time.'

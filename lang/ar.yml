@@ -4,6 +4,16 @@ ar:
     SERVERUNREACHABLE: 'لم يتم التواصل مع سيرفر تحويل الوثائق. من فضلك حاول مرة أخرى لاحقا أو اتصل بمشرف النظام الخاص بك.'
   DocumentConverterDecorator:
     ImportTab: استيراد
+  DocumentImportField:
+    ChooseFolder: 'اختر مجلد لحفظ هذا الملف'
+    EachH1: 'لكل عنوان واحد'
+    EachH2: 'لكل عنوان اثنين'
+    FileWarningHeader: 'تحذير: أمر الاستيراد سوف يمسح كل المحتويات في الصفح الفرعية لهذه الصفحة.'
+    ImportedFromFile: 'احصل على المحتوى من ملف بصيغة الوُرد'
+    IncludeTOC: 'استبدال هذه الصفحة بجدول المحتويات.'
+    KeepSource: 'احتفظ بالملف الأصلي. وقم بإضافة رابط له في جدول المحتويات، إذا أمكن ذلك.'
+    publishPages: 'نشر الصفحات المُعدلة (لا يُوصى به إلا إذا كنت متأكد من ناتج التحويل)'
+    SplitHeader: 'تقسيم المستند إلى صفحات'
   FileIFrameField:
     ATTACHONCESAVED2: 'يمكن إرفاق الملفات عند حفظ السجل للمرة الأولى.'
   UploadField:
