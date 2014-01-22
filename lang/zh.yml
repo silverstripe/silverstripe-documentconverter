@@ -12,8 +12,8 @@ zh:
     ImportedFromFile: '从WORD文档中导入内容'
     IncludeTOC: '用目录替换此页'
     KeepSource: '保留原始文档。如果允许的话，在 TOC 上为其添加一个链接。'
-    publishPages: '发布修改页面（除非你确认转换结果，否则不推荐）'
     SplitHeader: '拆分文件转换成网页'
+    publishPages: '发布修改页面（除非你确认转换结果，否则不推荐）'
   FileIFrameField:
     ATTACHONCESAVED2: '只要您第一次保存记录，文件就可以被附加。'
   UploadField:
