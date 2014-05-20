@@ -1,1 +1,28 @@
-fi: {}
+fi:
+  DocumentConverter:
+    PROCESSFAILED: 'Dokumenttia ei voitu prosessoida, ole hyvä ja tarkista että siirtämäsi dokumentit olivat varmasti .doc tai .docx muodossa.'
+    SERVERUNREACHABLE: 'Muunnospalvelimeen ei saatu yhteyttä. Ole hyvä ja yritä myöhemmin uudelleen tai ota yhteyttä järjestelmän ylläpitäjään.'
+  DocumentConverterDecorator:
+    ImportTab: Tuo
+  DocumentImportField:
+    ChooseFolder: 'Valitse kansio, jonne tiedosto tallennetaan'
+    EachH1: 'jokaiselle otsikko 1'
+    EachH2: 'jokaiselle otsikko 2'
+    FileWarningHeader: 'Varoitus: tuonti poistaa kaiken sisällön ja alasivut tältä sivulta.'
+    ImportedFromFile: 'Tuo sisältö Word-dokumentista'
+    IncludeTOC: 'Korvaa tämä sivu sisällysluettelolla'
+    KeepSource: 'Säilytä alkuperäinen dokumentti. Lisää linkin sisällysluetteloon, mikäli aktivoitu'
+    SplitHeader: 'Jaa dokumentti sivuiksi'
+    publishPages: 'Julkaise muokatut sivut (ei suositella, jollet ole varma muunnoksen lopputulemasta)'
+  FileIFrameField:
+    ATTACHONCESAVED2: 'Tiedostot voidaan liittää, kun olet tallentanut ensin tietueen.'
+  UploadField:
+    ATTACHFILE: 'Liitä tiedosto'
+    ATTACHFILES: 'Liitä tiedostoja'
+    DROPFILE: 'pudota tiedosto'
+    DROPFILES: 'pudota tiedostoja'
+    FIELDNOTSET: 'Informaatiota tiedostosta ei löytynyt'
+    FROMCOMPUTER: 'Tietokoneelta'
+    FROMCOMPUTERINFO: 'Siirrä omalta tietokoneelta'
+    STARTALL: 'Käynnistä kaikki'
+    STARTALLINFO: 'Käynnistä kaikki siirrot'
