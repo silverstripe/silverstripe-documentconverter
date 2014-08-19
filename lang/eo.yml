@@ -1,0 +1,28 @@
+eo:
+  DocumentConverter:
+    PROCESSFAILED: 'Ne povis trakti dokumenton. Bonvole kontrolu ke vi alŝutis en formato .doc aŭ .docx.'
+    SERVERUNREACHABLE: 'Ne povis kontakti servilon por konverti dokumenton. Bonvole reprovu postiome aŭ kontaktu vian administranton.'
+  DocumentConverterDecorator:
+    ImportTab: Importi
+  DocumentImportField:
+    ChooseFolder: 'Elektu dosierujon en kiu konservi la dosieron'
+    EachH1: 'por ĉiu titolo 1'
+    EachH2: 'por ĉiu titolo 2'
+    FileWarningHeader: 'Averto: importi forigos la tutan enhavon kaj subpaĝojn de tiu paĝo.'
+    ImportedFromFile: 'Importi enhavon el Word-dokumento'
+    IncludeTOC: 'Anstataŭigi ĉi tiun paĝon per tabelo de enhavo.'
+    KeepSource: 'Konservi la originan dokumenton. Enmetas ligilon al ĝi en TdE, se enŝaltita.'
+    SplitHeader: 'Dividi dokumenton en paĝojn'
+    publishPages: 'Publikigi ŝanĝitajn paĝojn (ne rekomendinde krom se vi certas pri la rezulto de konverto)'
+  FileIFrameField:
+    ATTACHONCESAVED2: 'Kiam vi unuafoje estos konservinta la rikordon vi povos alligi dosierojn.'
+  UploadField:
+    ATTACHFILE: 'Alligi dosieron'
+    ATTACHFILES: 'Alligi dosierojn'
+    DROPFILE: 'forigi dosieron'
+    DROPFILES: 'forigi dosierojn'
+    FIELDNOTSET: 'Ne trovis informon'
+    FROMCOMPUTER: 'El via komputilo'
+    FROMCOMPUTERINFO: 'Alŝuti el via komputilo'
+    STARTALL: 'Startigi ĉiujn'
+    STARTALLINFO: 'Startigi ĉiujn alŝutojn'
