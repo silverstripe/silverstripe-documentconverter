@@ -1,0 +1,17 @@
+de:
+  DocumentConverterDecorator:
+    ImportTab: Importieren
+  DocumentImportField:
+    ChooseFolder: 'Wählen Sie einen Ordner zum Speichern dieser Datei aus'
+    EachH1: 'für jede Überschrift 1'
+    EachH2: 'für jede Überschrift 2'
+    SplitHeader: 'Dokument in Seiten aufteilen'
+  UploadField:
+    ATTACHFILE: 'Datei anhängen'
+    ATTACHFILES: 'Dateien anhängen'
+    DROPFILE: 'Datei fallenlassen'
+    DROPFILES: 'Dateien fallenlassen'
+    FIELDNOTSET: 'Dateiinformation nicht gefunden'
+    FROMCOMPUTER: 'Von Ihrem Computer'
+    FROMCOMPUTERINFO: 'Von Ihrem Computer hochladen'
+    STARTALL: 'Alle starten'
