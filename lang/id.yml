@@ -1,0 +1,10 @@
+id:
+  DocumentConverterDecorator:
+    ImportTab: Impor
+  DocumentImportField:
+    ChooseFolder: 'Pilih sebuah map untuk menyimpan berkas ini'
+  UploadField:
+    FROMCOMPUTER: 'Dari komputermu'
+    FROMCOMPUTERINFO: 'Ungah dari komputermu'
+    STARTALL: 'Mulai semua'
+    STARTALLINFO: 'Mulai semua unggahan'
