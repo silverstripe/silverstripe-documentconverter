@@ -1,0 +1,9 @@
+fa_IR:
+  DocumentConverterDecorator:
+    ImportTab: وارد کردن
+  DocumentImportField:
+    ChooseFolder: 'یک پوشه برای ذخیره این فایل را انتخاب کنید'
+  UploadField:
+    ATTACHFILE: 'یک فایل ضمیمه کنید'
+    ATTACHFILES: 'فایل ها را ضمیمه کنید'
+    FROMCOMPUTER: 'از کامپیوتر شما'

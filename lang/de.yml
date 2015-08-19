@@ -5,6 +5,10 @@ de:
     ChooseFolder: 'Wählen Sie einen Ordner zum Speichern dieser Datei aus'
     EachH1: 'für jede Überschrift 1'
     EachH2: 'für jede Überschrift 2'
+    FileWarningHeader: 'Warnung: Import wird alle Inhalte und Unterseiten von dieser Seite entfernen.'
+    ImportedFromFile: 'Inhalt aus einem Word-Dokument importieren'
+    IncludeTOC: 'Ersetzen Sie diese Seite mit einem Inhaltsverzeichnis.'
+    'No': 'nein'
     SplitHeader: 'Dokument in Seiten aufteilen'
   UploadField:
     ATTACHFILE: 'Datei anhängen'
@@ -15,3 +19,4 @@ de:
     FROMCOMPUTER: 'Von Ihrem Computer'
     FROMCOMPUTERINFO: 'Von Ihrem Computer hochladen'
     STARTALL: 'Alle starten'
+    STARTALLINFO: 'Alle Hochladevorgänge starten'
