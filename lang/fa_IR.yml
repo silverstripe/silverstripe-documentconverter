@@ -6,4 +6,9 @@ fa_IR:
   UploadField:
     ATTACHFILE: 'یک فایل ضمیمه کنید'
     ATTACHFILES: 'فایل ها را ضمیمه کنید'
+    DROPFILE: 'انداختن یک فایل'
+    DROPFILES: 'انداختن فایل‌ها'
+    FIELDNOTSET: 'اطلاعات فایل پیدا نشد'
     FROMCOMPUTER: 'از کامپیوتر شما'
+    FROMCOMPUTERINFO: 'بارگذاری از کامپیوتر شما'
+    STARTALL: 'شروع همه'
