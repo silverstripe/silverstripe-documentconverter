@@ -12,6 +12,7 @@ fi:
     ImportedFromFile: 'Tuo sisältö Word-dokumentista'
     IncludeTOC: 'Korvaa tämä sivu sisällysluettelolla'
     KeepSource: 'Säilytä alkuperäinen dokumentti. Lisää linkin sisällysluetteloon, mikäli aktivoitu'
+    'No': 'ei'
     SplitHeader: 'Jaa dokumentti sivuiksi'
     publishPages: 'Julkaise muokatut sivut (ei suositella, jollet ole varma muunnoksen lopputulemasta)'
   FileIFrameField:
