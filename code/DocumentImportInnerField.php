@@ -12,7 +12,7 @@
  *   puts each subsection into separate page. The first part of the document until
  *   the first header occurence is added to the current page.
  * * KeepSource: prevents the removal of the uploaded document, and stores its ID
- *   in the has_one relationship on the parent page (see the 
+ *   in the has_one relationship on the parent page (see the
  *   DocumentImportField::__construct for how to configure the name of this has_one)
  * * ChosenFolderID: directory to be used for storing the original document and the
  *   image files that come along with the document.
@@ -42,7 +42,7 @@ class DocumentImportInnerField extends UploadField {
 
 		$name = $this->getName();
 		$tmpfile = $request->postVar($name);
-		
+
 		// Check if the file has been uploaded into the temporary storage.
 		if (!$tmpfile) {
 			$return = array('error' => _t('UploadField.FIELDNOTSET', 'File information not found'));
@@ -146,14 +146,14 @@ class DocumentImportInnerField extends UploadField {
 			// Store the result
 			$page->write();
 			if($publishPages) $page->doPublish();
-		} 
+		}
 	}
 
 	protected function getBodyText($doc, $node) {
 		// Build a new doc
 		$htmldoc = new DOMDocument();
 		// Create the html element
-		$html = $htmldoc->createElement('html'); 
+		$html = $htmldoc->createElement('html');
 		$htmldoc->appendChild($html);
 		// Append the body node
 		$html->appendChild($htmldoc->importNode($node, true));
@@ -178,7 +178,7 @@ class DocumentImportInnerField extends UploadField {
 	 */
 	protected function writeContent($subtitle, $subdoc, $subnode, $sort = null, $publishPages = false) {
 		$record = $this->form->getRecord();
-		
+
 		if($subtitle) {
 			// Write the chapter page to a subpage.
 			$page = DataObject::get_one('Page', sprintf('"Title" = \'%s\' AND "ParentID" = %d', $subtitle, $record->ID));
@@ -199,10 +199,10 @@ class DocumentImportInnerField extends UploadField {
 			// Write to the master page.
 			$record->Content = $this->getBodyText($subdoc, $subnode);
 			$record->write();
-			
+
 			if($publishPages) $record->doPublish();
 		}
-		
+
 	}
 
 	/**
@@ -236,15 +236,19 @@ class DocumentImportInnerField extends UploadField {
 		$tidy->parseString($content, array('output-xhtml' => true), 'utf8');
 		$tidy->cleanRepair();
 
-		// Add a header that makes DOMDocument UTF-8 safe
-		$html = str_replace('<head>', '<head><meta http-equiv="content-type" content="text/html; charset=utf-8">', $tidy);
+		$fragment = [];
+		foreach($tidy->body()->child as $child) {
+			$fragment[] = $child->value;
+		}
+
+		$htmlValue = Injector::inst()->create('HTMLValue', implode("\n", $fragment));
+
+		// Sanitise
+		$santiser = Injector::inst()->create('HtmlEditorSanitiser', HtmlEditorConfig::get_active());
+		$santiser->sanitise($htmlValue);
 
 		// Load in the HTML
-		$doc = new DOMDocument();
-		$doc->strictErrorChecking = false;
-		libxml_use_internal_errors(true);
-		$doc->loadHTML($html);
-
+		$doc = $htmlValue->getDocument();
 		$xpath = new DOMXPath($doc);
 
 		// make sure any images are added as Image records with a relative link to assets
@@ -336,7 +340,7 @@ class DocumentImportInnerField extends UploadField {
 
 		set_error_handler('DocumentImportInnerField_error_handler');
 		global $DocumentImportInnerfield_error;
-		
+
 		$subtitle = null;
 		$subdoc = new DOMDocument();
 		$subnode = $subdoc->createElement('body');
@@ -362,7 +366,7 @@ class DocumentImportInnerField extends UploadField {
 		} else {
 			$this->writeContent($subtitle, $subdoc, $body, null, $publishPages);
 		}
-		
+
 		if($subnode->hasChildNodes() && !$DocumentImportInnerfield_error) {
 			$this->writeContent($subtitle, $subdoc, $subnode, null, $publishPages);
 		}
@@ -417,7 +421,7 @@ class DocumentImportIFrameField_Importer {
 
 	public static function get_docvert_username() {
 		return self::$docvert_username;
-	} 
+	}
 
 	public static function set_docvert_password($password = null) {
 		self::$docvert_password = $password;
@@ -486,7 +490,7 @@ class DocumentImportIFrameField_Importer {
 		// extract the converted document into assets
 		// you need php zip, i.e. port install php5-zip
 		$zip = new ZipArchive();
-		
+
 		if($zip->open($outzip)) {
 			$zip->extractTo(ASSETS_PATH .$folderName);
 		}
