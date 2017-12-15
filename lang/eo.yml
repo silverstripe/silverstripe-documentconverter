@@ -2,7 +2,7 @@ eo:
   DocumentConverter:
     PROCESSFAILED: 'Ne povis trakti dokumenton. Bonvole kontrolu ke vi alŝutis en formato .doc aŭ .docx.'
     SERVERUNREACHABLE: 'Ne povis kontakti servilon por konverti dokumenton. Bonvole reprovu postiome aŭ kontaktu vian administranton.'
-  DocumentConverterDecorator:
+  SilverStripe\DocumentConverter\DocumentConverter:
     ImportTab: Importi
   DocumentImportField:
     ChooseFolder: 'Elektu dosierujon en kiu konservi la dosieron'

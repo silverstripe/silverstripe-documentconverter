@@ -1,4 +1,20 @@
 <?php
+
+namespace SilverStripe\DocumentConverter;
+
+
+use InvalidArgumentException;
+
+use SilverStripe\View\Requirements;
+use SilverStripe\Forms\HeaderField;
+use SilverStripe\Forms\DropdownField;
+use SilverStripe\Forms\CheckboxField;
+use SilverStripe\Assets\Folder;
+use SilverStripe\Forms\TreeDropdownField;
+use SilverStripe\Forms\FieldList;
+use SilverStripe\Forms\CompositeField;
+
+
 /**
  * Provides a document import capability through the use of an external service.
  * Includes several options fields, which are bundled together with an UploadField
@@ -26,7 +42,7 @@ class DocumentImportField extends CompositeField {
 			new HeaderField(
 				'FileWarningHeader', 
 				_t(
-					'DocumentImportField.FileWarningHeader',
+					__CLASS__ . '.FileWarningHeader',
 					'Warning: import will remove all content and subpages of this page.'
 				), 
 				4
@@ -34,41 +50,41 @@ class DocumentImportField extends CompositeField {
 			$splitHeader = new DropdownField(
 				'DocumentImportField-SplitHeader', 
 				_t(
-					'DocumentImportField.SplitHeader',
+					__CLASS__ . '.SplitHeader',
 					'Split document into pages'
 				), 
 				array(
-					0 => _t('DocumentImportField.No','no'), 
-					1 => _t('DocumentImportField.EachH1','for each heading 1'), 
-					2 => _t('DocumentImportField.EachH2','for each heading 2')
+					0 => _t(__CLASS__ . '.No','no'), 
+					1 => _t(__CLASS__ . '.EachH1','for each heading 1'), 
+					2 => _t(__CLASS__ . '.EachH2','for each heading 2')
 				)
 			),
 			$keepSource = new CheckboxField(
 				'DocumentImportField-KeepSource', 
 				_t(
-					'DocumentImportField.KeepSource',
+					__CLASS__ . '.KeepSource',
 					'Keep the original document. Adds a link to it on TOC, if enabled.'
 				)
 			),
 			$chosenFolderID = new TreeDropdownField(
 				'DocumentImportField-ChosenFolderID',
-				_t('DocumentImportField.ChooseFolder', 'Choose a folder to save this file'), 
-				'Folder'
+				_t(__CLASS__ . '.ChooseFolder', 'Choose a folder to save this file'), 
+				Folder::class
 			),
 			$includeTOC = new CheckboxField(
 				'DocumentImportField-IncludeTOC', 
-				_t('DocumentImportField.IncludeTOC', 'Replace this page with a Table of Contents.')
+				_t(__CLASS__ . '.IncludeTOC', 'Replace this page with a Table of Contents.')
 			),
 			$publishPages = new CheckboxField(
 				'DocumentImportField-PublishPages', 
 				_t(
-					'DocumentImportField.publishPages',
+					__CLASS__ . '.publishPages',
 					'Publish modified pages (not recommended unless you are sure about the conversion outcome)'
 				)
 			),
 			$this->innerField = new DocumentImportInnerField(
 				'ImportedFromFile', 
-				_t('DocumentImportField.ImportedFromFile','Import content from a word document')
+				_t(__CLASS__ . '.ImportedFromFile','Import content from a word document')
 			),
 		));
 

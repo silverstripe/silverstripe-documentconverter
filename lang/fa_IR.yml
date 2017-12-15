@@ -1,6 +1,6 @@
 fa_IR:
-  DocumentConverterDecorator:
-    ImportTab: 'وارد کردن'
+  SilverStripe\DocumentConverter\DocumentConverter:
+    ImportTab: وارد کردن
   DocumentImportField:
     ChooseFolder: 'یک پوشه برای ذخیره این فایل را انتخاب کنید'
   UploadField:

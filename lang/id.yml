@@ -1,5 +1,5 @@
 id:
-  DocumentConverterDecorator:
+  SilverStripe\DocumentConverter\DocumentConverter:
     ImportTab: Impor
   DocumentImportField:
     ChooseFolder: 'Pilih sebuah map untuk menyimpan berkas ini'

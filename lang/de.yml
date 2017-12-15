@@ -1,5 +1,5 @@
 de:
-  DocumentConverterDecorator:
+  SilverStripe\DocumentConverter\DocumentConverter:
     ImportTab: Importieren
   DocumentImportField:
     ChooseFolder: 'Wählen Sie einen Ordner zum Speichern dieser Datei aus'

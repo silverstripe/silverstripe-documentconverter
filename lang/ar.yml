@@ -2,7 +2,7 @@ ar:
   DocumentConverter:
     PROCESSFAILED: 'لم يتم التمكن من معالجة الوثيقة, من فضلك قم بمراجعة أنك قمت برفع الملف بصيغة .دى أو سى أو صيغة .دى أو سى إكس.'
     SERVERUNREACHABLE: 'لم يتم التواصل مع سيرفر تحويل الوثائق. من فضلك حاول مرة أخرى لاحقا أو اتصل بمشرف النظام الخاص بك.'
-  DocumentConverterDecorator:
+  SilverStripe\DocumentConverter\DocumentConverter:
     ImportTab: استيراد
   DocumentImportField:
     ChooseFolder: 'اختر مجلد لحفظ هذا الملف'

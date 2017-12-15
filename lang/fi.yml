@@ -2,7 +2,7 @@ fi:
   DocumentConverter:
     PROCESSFAILED: 'Dokumenttia ei voitu prosessoida, ole hyvä ja tarkista että siirtämäsi dokumentit olivat varmasti .doc tai .docx muodossa.'
     SERVERUNREACHABLE: 'Muunnospalvelimeen ei saatu yhteyttä. Ole hyvä ja yritä myöhemmin uudelleen tai ota yhteyttä järjestelmän ylläpitäjään.'
-  DocumentConverterDecorator:
+  SilverStripe\DocumentConverter\DocumentConverter:
     ImportTab: Tuo
   DocumentImportField:
     ChooseFolder: 'Valitse kansio, jonne tiedosto tallennetaan'
