@@ -12,7 +12,7 @@ eo:
     ImportedFromFile: 'Importi enhavon el Word-dokumento'
     IncludeTOC: 'Anstataŭigi ĉi tiun paĝon per tabelo de enhavo.'
     KeepSource: 'Konservi la originan dokumenton. Enmetas ligilon al ĝi en TdE, se enŝaltita.'
-    'No': 'ne'
+    'No': ne
     SplitHeader: 'Dividi dokumenton en paĝojn'
     publishPages: 'Publikigi ŝanĝitajn paĝojn (ne rekomendinde krom se vi certas pri la rezulto de konverto)'
   FileIFrameField:
