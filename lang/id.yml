@@ -1,7 +1,7 @@
 id:
-  SilverStripe\DocumentConverter\DocumentConverter:
+  SilverStripe\DocumentConverter\ConvertsDocumentsExtension:
     ImportTab: Impor
-  DocumentImportField:
+  SilverStripe\DocumentConverter\DocumentConversionField:
     ChooseFolder: 'Pilih sebuah map untuk menyimpan berkas ini'
   UploadField:
     FROMCOMPUTER: 'Dari komputermu'

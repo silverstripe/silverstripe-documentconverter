@@ -22,7 +22,7 @@ use DOMXPath;
 
 
 
-use SilverStripe\DocumentConverter\DocumentImportIFrameFieldImporter;
+use SilverStripe\DocumentConverter\DocumentConverter;
 use SilverStripe\Control\HTTPRequest;
 use SilverStripe\Core\Convert;
 use SilverStripe\Control\HTTPResponse;
@@ -65,11 +65,11 @@ use SilverStripe\AssetAdmin\Forms\UploadField;
  *
  *  Caveat: there is some coupling between the above parameters.
  */
-class DocumentImportInnerField extends UploadField {
+class DocumentImporterField extends UploadField {
 
 	private static $allowed_actions = array('upload');
 
-	private static $importer_class = DocumentImportIFrameFieldImporter::class;
+	private static $importer_class = DocumentConverter::class;
 
 	/**
 	 * Process the document immediately upon upload.
@@ -264,7 +264,7 @@ class DocumentImportInnerField extends UploadField {
 		);
 
 		$sourcePage = $this->form->getRecord();
-		$importerClass = Config::inst()->get(DocumentImportInnerField::class, 'importer_class');
+		$importerClass = Config::inst()->get(__CLASS__, 'importer_class');
 		$importer = Injector::inst()->create($importerClass, $fileDescriptor, $chosenFolderID);
 		$content = $importer->import();
 

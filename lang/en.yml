@@ -2,9 +2,9 @@ en:
   DocumentConverter:
     PROCESSFAILED: 'Could not process document, please double-check you uploaded a .doc or .docx format.'
     SERVERUNREACHABLE: 'Could not contact document conversion server. Please try again later or contact your system administrator.'
-  SilverStripe\DocumentConverter\DocumentConverter:
+  SilverStripe\DocumentConverter\ConvertsDocumentsExtension:
     ImportTab: Import
-  DocumentImportField:
+  SilverStripe\DocumentConverter\DocumentConversionField:
     ChooseFolder: 'Choose a folder to save this file'
     EachH1: 'for each heading 1'
     EachH2: 'for each heading 2'

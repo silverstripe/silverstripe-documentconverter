@@ -2,10 +2,10 @@ zh:
   DocumentConverter:
     PROCESSFAILED: '无法处理文档，请复核您上传的是 .doc 或 .docx 格式。'
     SERVERUNREACHABLE: '无法连到文档转换服务器。请稍后再试或联系系统管理员。'
-  SilverStripe\DocumentConverter\DocumentConverter:
+  SilverStripe\DocumentConverter\ConvertsDocumentsExtension:
     ImportTab: 导入
-  DocumentImportField:
-    ChooseFolder: 选择文件夹保存此文件
+  SilverStripe\DocumentConverter\DocumentConversionField:
+    ChooseFolder: '选择文件夹保存此文件'
     EachH1: '每个标题1'
     EachH2: '每个标题2'
     FileWarningHeader: '警告：导入将删除所有内容和子页面。'

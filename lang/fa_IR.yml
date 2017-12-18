@@ -1,7 +1,7 @@
 fa_IR:
-  SilverStripe\DocumentConverter\DocumentConverter:
+  SilverStripe\DocumentConverter\ConvertsDocumentsExtension:
     ImportTab: وارد کردن
-  DocumentImportField:
+  SilverStripe\DocumentConverter\DocumentConversionField:
     ChooseFolder: 'یک پوشه برای ذخیره این فایل را انتخاب کنید'
   UploadField:
     ATTACHFILE: 'یک فایل ضمیمه کنید'

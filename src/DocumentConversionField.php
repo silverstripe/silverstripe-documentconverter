@@ -20,9 +20,9 @@ use SilverStripe\Forms\CompositeField;
  * Includes several options fields, which are bundled together with an UploadField
  * into a CompositeField.
  */
-class DocumentImportField extends CompositeField {
+class DocumentConversionField extends CompositeField {
 	/**
-	 * Reference to the inner upload field (DocumentImportInnerField).
+	 * Reference to the inner upload field (DocumentImporterField).
 	 */
 	private $innerField = null;
 
@@ -32,11 +32,11 @@ class DocumentImportField extends CompositeField {
 	 * @param $children FieldSet/array Any additional children.
 	 */
 	public function __construct($children = null) {
-		if (is_string($children)) throw new InvalidArgumentException('DocumentImportField::__construct does not accept a name as its parameter, it defaults to "ImportedFromFile" instead. Use DocumentImportField::getInnerField()->setName() if you want to change it.');
-		if ($children) throw new InvalidArgumentException('DocumentImportField::__construct provides its own fields and does not accept additional children.');
+		if (is_string($children)) throw new InvalidArgumentException('DocumentConversionField::__construct does not accept a name as its parameter, it defaults to "ImportedFromFile" instead. Use DocumentConversionField::getInnerField()->setName() if you want to change it.');
+		if ($children) throw new InvalidArgumentException('DocumentConversionField::__construct provides its own fields and does not accept additional children.');
 
 		// Add JS specific to this field.
-		Requirements::javascript('documentconverter/javascript/DocumentImportField.js');
+		Requirements::javascript('silverstripe/documentconverter: javascript/DocumentConversionField.js');
 
 		$fields = new FieldList(array(
 			new HeaderField(
@@ -48,7 +48,7 @@ class DocumentImportField extends CompositeField {
 				4
 			),
 			$splitHeader = new DropdownField(
-				'DocumentImportField-SplitHeader', 
+				'DocumentConversionField-SplitHeader', 
 				_t(
 					__CLASS__ . '.SplitHeader',
 					'Split document into pages'
@@ -60,29 +60,29 @@ class DocumentImportField extends CompositeField {
 				)
 			),
 			$keepSource = new CheckboxField(
-				'DocumentImportField-KeepSource', 
+				'DocumentConversionField-KeepSource', 
 				_t(
 					__CLASS__ . '.KeepSource',
 					'Keep the original document. Adds a link to it on TOC, if enabled.'
 				)
 			),
 			$chosenFolderID = new TreeDropdownField(
-				'DocumentImportField-ChosenFolderID',
+				'DocumentConversionField-ChosenFolderID',
 				_t(__CLASS__ . '.ChooseFolder', 'Choose a folder to save this file'), 
 				Folder::class
 			),
 			$includeTOC = new CheckboxField(
-				'DocumentImportField-IncludeTOC', 
+				'DocumentConversionField-IncludeTOC', 
 				_t(__CLASS__ . '.IncludeTOC', 'Replace this page with a Table of Contents.')
 			),
 			$publishPages = new CheckboxField(
-				'DocumentImportField-PublishPages', 
+				'DocumentConversionField-PublishPages', 
 				_t(
 					__CLASS__ . '.publishPages',
 					'Publish modified pages (not recommended unless you are sure about the conversion outcome)'
 				)
 			),
-			$this->innerField = new DocumentImportInnerField(
+			$this->innerField = new DocumentImporterField(
 				'ImportedFromFile', 
 				_t(__CLASS__ . '.ImportedFromFile','Import content from a word document')
 			),
