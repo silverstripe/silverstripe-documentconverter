@@ -1,5 +1,5 @@
 ru:
-  DocumentConverter:
+  SilverStripe\DocumentConverter\DocumentConverter:
     PROCESSFAILED: 'Не могу обработать документ, пожалуйста проверьте что документ загружен в формате .doc или .docx.'
     SERVERUNREACHABLE: 'Не могу подключиться к серверу конвертации документов. Пожалуйста попробуйте позднее или свяжитесь с вашим системным администратором.'
   DocumentConverterDecorator:
@@ -15,7 +15,7 @@ ru:
     'No': нет
     SplitHeader: 'Разделить документ на страницы'
     publishPages: 'Опубликовать модифицированные страницы (не рекомендуется если вы не уверены в последствиях)'
-  FileIFrameField:
+  SilverStripe\DocumentConverter\DocumentImporterField:
     ATTACHONCESAVED2: 'Вы сможете прикрепитьфайлы после первого сохранения записи.'
   UploadField:
     ATTACHFILE: 'Прикрепить файл'

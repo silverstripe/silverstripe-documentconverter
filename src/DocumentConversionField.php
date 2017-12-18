@@ -2,18 +2,15 @@
 
 namespace SilverStripe\DocumentConverter;
 
-
 use InvalidArgumentException;
-
-use SilverStripe\View\Requirements;
-use SilverStripe\Forms\HeaderField;
-use SilverStripe\Forms\DropdownField;
-use SilverStripe\Forms\CheckboxField;
 use SilverStripe\Assets\Folder;
-use SilverStripe\Forms\TreeDropdownField;
-use SilverStripe\Forms\FieldList;
+use SilverStripe\Forms\CheckboxField;
 use SilverStripe\Forms\CompositeField;
-
+use SilverStripe\Forms\DropdownField;
+use SilverStripe\Forms\FieldList;
+use SilverStripe\Forms\HeaderField;
+use SilverStripe\Forms\TreeDropdownField;
+use SilverStripe\View\Requirements;
 
 /**
  * Provides a document import capability through the use of an external service.

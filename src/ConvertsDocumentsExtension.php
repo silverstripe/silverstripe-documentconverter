@@ -2,13 +2,9 @@
 
 namespace SilverStripe\DocumentConverter;
 
-
-
 use SilverStripe\Assets\File;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\ORM\DataExtension;
-
-
 
 class ConvertsDocumentsExtension extends DataExtension {
 

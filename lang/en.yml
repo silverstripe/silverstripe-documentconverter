@@ -1,5 +1,5 @@
 en:
-  DocumentConverter:
+  SilverStripe\DocumentConverter\DocumentConverter:
     PROCESSFAILED: 'Could not process document, please double-check you uploaded a .doc or .docx format.'
     SERVERUNREACHABLE: 'Could not contact document conversion server. Please try again later or contact your system administrator.'
   SilverStripe\DocumentConverter\ConvertsDocumentsExtension:
@@ -15,7 +15,7 @@ en:
     'No': 'no'
     SplitHeader: 'Split document into pages'
     publishPages: 'Publish modified pages (not recommended unless you are sure about the conversion outcome)'
-  FileIFrameField:
+  SilverStripe\DocumentConverter\DocumentImporterField:
     ATTACHONCESAVED2: 'Files can be attached once you have saved the record for the first time.'
   UploadField:
     ATTACHFILE: 'Attach a file'

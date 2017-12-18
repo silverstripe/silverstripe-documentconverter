@@ -2,46 +2,31 @@
 
 namespace SilverStripe\DocumentConverter;
 
-
-
-
-
-
-
+use DOMAttr;
 use DOMDocument;
 use DOMElement;
-use DOMAttr;
-
-use Page;
-
-
-use Tidy;
-use HtmlEditorConfig;
 use DOMXPath;
-
-
-
-
-use SilverStripe\DocumentConverter\DocumentConverter;
-use SilverStripe\Control\HTTPRequest;
-use SilverStripe\Core\Convert;
-use SilverStripe\Control\HTTPResponse;
-use SilverStripe\Assets\Upload;
-use SilverStripe\Assets\File;
-use SilverStripe\ORM\DataObject;
-use SilverStripe\Core\Config\Config;
-use SilverStripe\DocumentConverter\DocumentImportInnerField;
-use SilverStripe\Core\Injector\Injector;
-use SilverStripe\Assets\Folder;
-use SilverStripe\Assets\FileNameFilter;
-use SilverStripe\Assets\Image;
-use SilverStripe\Control\Director;
-use SilverStripe\Versioned\Versioned;
+use Page;
 use SilverStripe\AssetAdmin\Forms\UploadField;
+use SilverStripe\Assets\File;
+use SilverStripe\Assets\FileNameFilter;
+use SilverStripe\Assets\Folder;
+use SilverStripe\Assets\Image;
+use SilverStripe\Assets\Upload;
+use SilverStripe\Core\Config\Config;
+use SilverStripe\Core\Convert;
+use SilverStripe\Core\Injector\Injector;
+use SilverStripe\Control\Director;
+use SilverStripe\Control\HTTPRequest;
+use SilverStripe\Control\HTTPResponse;
+use SilverStripe\Forms\HTMLEditor\HtmlEditorConfig;
+use SilverStripe\ORM\DataObject;
+use SilverStripe\Versioned\Versioned;
+use Tidy;
 
 
 /**
- * DocumentImportInnerField is built on top of UploadField to access a document
+ * DocumentImporterField is built on top of UploadField to access a document
  * conversion capabilities. The original field is stripped down to allow only
  * uploads from the user's computer, and triggers the conversion when the upload
  * is completed.
@@ -86,7 +71,7 @@ class DocumentImporterField extends UploadField {
 
 		// Check if the file has been uploaded into the temporary storage.
 		if (!$tmpfile) {
-			$return = array('error' => _t('UploadField.FIELDNOTSET', 'File information not found'));
+			$return = array('error' => _t('SilverStripe\\AssetAdmin\\Forms\\UploadField.FIELDNOTSET', 'File information not found'));
 		} else {
 			$return = array(
 				'name' => $tmpfile['name'],
@@ -379,21 +364,20 @@ class DocumentImporterField extends UploadField {
 			$this->unusedChildren[$child->ID] = $child;
 		}
 
-		$DocumentImportInnerfield_error;
+		$documentImporterFieldError;
 
-		$DocumentImportInnerField_error_handler = function ($errno, $errstr, $errfile, $errline) use ( $DocumentImportInnerfield_error ) {
-			global $DocumentImportInnerfield_error;
-			$DocumentImportInnerfield_error = _t(
-				'DocumentConverter.PROCESSFAILED',
+		$documentImporterFieldErrorHandler = function ($errno, $errstr, $errfile, $errline) use ( $documentImporterFieldError ) {
+			$documentImporterFieldError = _t(
+				'SilverStripe\\DocumentConverter\\DocumentConverter.PROCESSFAILED',
 				'Could not process document, please double-check you uploaded a .doc or .docx format.',
-				'Document Converter process Word documents into HTML.'
+				'Document Converter processes Word documents into HTML.'
 			);
 
 			// Do not cascade the error through other handlers
 			return true;
 		};
 
-		set_error_handler($DocumentImportInnerField_error_handler);
+		set_error_handler($documentImporterFieldErrorHandler);
 
 		$subtitle = null;
 		$subdoc = new DOMDocument();
@@ -401,7 +385,7 @@ class DocumentImporterField extends UploadField {
 		$node = $body->firstChild;
 		$sort = 1;
 		if($splitHeader == 1 || $splitHeader == 2) {
-			while($node && !$DocumentImportInnerfield_error) {
+			while($node && !$documentImporterFieldError) {
 				if($node instanceof DOMElement && $node->tagName == 'h' . $splitHeader) {
 					if($subnode->hasChildNodes()) {
 						$this->writeContent($subtitle, $subdoc, $subnode, $sort, $publishPages);
@@ -421,13 +405,13 @@ class DocumentImporterField extends UploadField {
 			$this->writeContent($subtitle, $subdoc, $body, null, $publishPages);
 		}
 
-		if($subnode->hasChildNodes() && !$DocumentImportInnerfield_error) {
+		if($subnode->hasChildNodes() && !$documentImporterFieldError) {
 			$this->writeContent($subtitle, $subdoc, $subnode, null, $publishPages);
 		}
 
 		restore_error_handler();
-		if ($DocumentImportInnerfield_error) {
-			return array('error' => $DocumentImportInnerfield_error);
+		if ($documentImporterFieldError) {
+			return array('error' => $documentImporterFieldError);
 		}
 
 		foreach($this->unusedChildren as $child) {

@@ -1,5 +1,5 @@
 eo:
-  DocumentConverter:
+  SilverStripe\DocumentConverter\DocumentConverter:
     PROCESSFAILED: 'Ne povis trakti dokumenton. Bonvole kontrolu ke vi alŝutis en formato .doc aŭ .docx.'
     SERVERUNREACHABLE: 'Ne povis kontakti servilon por konverti dokumenton. Bonvole reprovu postiome aŭ kontaktu vian administranton.'
   SilverStripe\DocumentConverter\ConvertsDocumentsExtension:
@@ -15,7 +15,7 @@ eo:
     'No': ne
     SplitHeader: 'Dividi dokumenton en paĝojn'
     publishPages: 'Publikigi ŝanĝitajn paĝojn (ne rekomendinde krom se vi certas pri la rezulto de konverto)'
-  FileIFrameField:
+  SilverStripe\DocumentConverter\DocumentImporterField:
     ATTACHONCESAVED2: 'Kiam vi unuafoje estos konservinta la rikordon vi povos alligi dosierojn.'
   UploadField:
     ATTACHFILE: 'Alligi dosieron'

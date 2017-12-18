@@ -3,12 +3,9 @@
 namespace SilverStripe\DocumentConverter;
 
 use CURLFile;
-
-use ZipArchive;
 use SilverStripe\Assets\Folder;
 use SilverStripe\ORM\DataObject;
-
-
+use ZipArchive;
 
 /**
  * Utility class hiding the specifics of the document conversion process.
@@ -97,7 +94,7 @@ class DocumentConverter {
 
 		if (!$returnValue || ($status != 200)) {
 			return array('error' => _t(
-				'DocumentConverter.SERVERUNREACHABLE',
+				__CLASS__ . '.SERVERUNREACHABLE',
 				'Could not contact document conversion server. Please try again later or contact your system administrator.',
 				'Document Converter process Word documents into HTML.'
 			));
@@ -117,9 +114,9 @@ class DocumentConverter {
 
 		if (!file_exists(ASSETS_PATH . $folderName . '/index.html')) {
 			return array('error' =>  _t(
-				'DocumentConverter.PROCESSFAILED',
+				__CLASS__ . '.PROCESSFAILED',
 				'Could not process document, please double-check you uploaded a .doc or .docx format.',
-				'Document Converter process Word documents into HTML.'
+				'Document Converter processes Word documents into HTML.'
 			));
 		}
 
