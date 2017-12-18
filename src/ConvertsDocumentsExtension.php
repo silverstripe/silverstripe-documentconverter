@@ -8,7 +8,7 @@ use SilverStripe\ORM\DataExtension;
 
 class ConvertsDocumentsExtension extends DataExtension {
 
-	public static $has_one = array(
+	private static $has_one = array(
 		'ImportedFromFile' => File::class
 	);
 
@@ -26,6 +26,6 @@ class ConvertsDocumentsExtension extends DataExtension {
 			'Root.Import',
 			_t(__CLASS__ . '.ImportTab', 'Import')
 		);
-		$fields->addFieldToTab('Root.Import', new DocumentImportField());
+		$fields->addFieldToTab('Root.Import', DocumentConversionField::create());
 	}
 }

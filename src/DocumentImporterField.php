@@ -52,7 +52,7 @@ use Tidy;
  */
 class DocumentImporterField extends UploadField {
 
-	private static $allowed_actions = array('upload');
+	private static $allowed_actions = ['upload'];
 
 	private static $importer_class = DocumentConverter::class;
 
@@ -101,7 +101,7 @@ class DocumentImporterField extends UploadField {
 			}
 		}
 
-		$response = new HTTPResponse(Convert::raw2json(array($return)));
+		$response = HTTPResponse::create(Convert::raw2json(array($return)));
 		$response->addHeader('Content-Type', 'text/plain');
 		return $response;
 	}
@@ -114,9 +114,9 @@ class DocumentImporterField extends UploadField {
 	 * @return File Stored file.
 	 */
 	protected function preserveSourceDocument($tmpfile, $chosenFolderID = null) {
-		$upload = new Upload();
+		$upload = Upload::create();
 
-		$file = new File();
+		$file = File::create();
 		$upload->loadIntoFile($tmpfile, $file, $chosenFolderID);
 
 		$page = $this->form->getRecord();
@@ -209,7 +209,7 @@ class DocumentImporterField extends UploadField {
 			// Write the chapter page to a subpage.
 			$page = DataObject::get_one('Page', sprintf('"Title" = \'%s\' AND "ParentID" = %d', $subtitle, $record->ID));
 			if(!$page) {
-				$page = new Page();
+				$page = Page::create();
 				$page->ParentID = $record->ID;
 				$page->Title = $subtitle;
 			}
@@ -278,7 +278,8 @@ class DocumentImporterField extends UploadField {
 		$xpath = new DOMXPath($doc);
 
 		// make sure any images are added as Image records with a relative link to assets
-		$folderName = ($chosenFolderID) ? DataObject::get_by_id(Folder::class, $chosenFolderID)->Name : '';
+		$chosenFolder = ($this->chosenFolderID) ? DataObject::get_by_id(Folder::class, $this->chosenFolderID) : null;
+		$folderName = ($chosenFolder) ? '/' . $chosenFolder->Name : '';
 		$imgs = $xpath->query('//img');
 		for($i = 0; $i < $imgs->length; $i++) {
 			$img = $imgs->item($i);
@@ -287,7 +288,7 @@ class DocumentImporterField extends UploadField {
 
 			$image = Image::get()->filter(array('Name' => $name, 'ParentID' => (int) $chosenFolderID))->first();
 			if(!($image && $image->exists())) {
-				$image = new Image();
+				$image = Image::create();
 				$image->ParentID = (int) $chosenFolderID;
 				$image->Name = $name;
 				$image->write();

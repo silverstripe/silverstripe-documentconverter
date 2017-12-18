@@ -4,6 +4,7 @@ namespace SilverStripe\DocumentConverter;
 
 use CURLFile;
 use SilverStripe\Assets\Folder;
+use SilverStripe\Core\Config\Configurable;
 use SilverStripe\ORM\DataObject;
 use ZipArchive;
 
@@ -11,6 +12,18 @@ use ZipArchive;
  * Utility class hiding the specifics of the document conversion process.
  */
 class DocumentConverter {
+
+	use Configurable;
+
+	/**
+	 * @var array Docvert connection details
+	 * @config
+	 */
+	private static $docvert_details = [
+		'username' => '',
+		'password' => '',
+		'url' => ''
+	];
 
 	/**
 	 * Associative array of:
@@ -20,41 +33,50 @@ class DocumentConverter {
 	 */
 	protected $fileDescriptor;
 
+	/**
+	 * @var int
+	 * ID of a SilverStripe\Assets\Folder
+	 */
 	protected $chosenFolderID;
 
-	protected static $docvert_username;
-
-	protected static $docvert_password;
-
-	protected static $docvert_url;
-
-	public static function set_docvert_username($username = null)  {
-		self::$docvert_username = $username;
-	}
-
-	public static function get_docvert_username() {
-		return self::$docvert_username;
-	}
-
-	public static function set_docvert_password($password = null) {
-		self::$docvert_password = $password;
-	}
-
-	public static function get_docvert_password() {
-		return self::$docvert_password;
-	}
-
-	public static function set_docvert_url($url = null) {
-		self::$docvert_url = $url;
-	}
-
-	public static function get_docvert_url() {
-		return self::$docvert_url;
-	}
+	/**
+	 * @var array instance specific connection details
+	 * initially filled with the config settings
+	 */
+	protected $docvertDetails = [
+		'username' => '',
+		'password' => '',
+		'url' => ''
+	];
 
 	public function __construct($fileDescriptor, $chosenFolderID = null) {
 		$this->fileDescriptor = $fileDescriptor;
 		$this->chosenFolderID = $chosenFolderID;
+		array_merge($this->docvertDetails, (array)$this->config()->get('docvert_details'));
+	}
+
+	public function setDocvertUsername($username = null)  {
+		$this->docvertDetails['username'] = $username;
+	}
+
+	public function getDocvertUsername() {
+		return $this->docvertDetails['username'];
+	}
+
+	public function setDocvertPassword($password = null) {
+		$this->docvertDetails['password'] = $password;
+	}
+
+	public function getDocvertPassword() {
+		return $this->docvertDetails['password'];
+	}
+
+	public function setDocvertUrl($url = null) {
+		$this->docvertDetails['url'] = $url;
+	}
+
+	public function getDocvertUrl() {
+		return $this->docvertDetails['url'];
 	}
 
 	public function import() {
@@ -72,15 +94,16 @@ class DocumentConverter {
 		}
 
 		curl_setopt_array($ch, array(
-			CURLOPT_URL => self::get_docvert_url(),
-			CURLOPT_USERPWD => sprintf('%s:%s', self::get_docvert_username(), self::get_docvert_password()),
+			CURLOPT_URL => $this->getDocvertUrl(),
+			CURLOPT_USERPWD => sprintf('%s:%s', $this->getDocvertUsername(), $this->getDocvertPassword()),
 			CURLOPT_POST => 1,
 			CURLOPT_POSTFIELDS => array('file' => $file),
 			CURLOPT_CONNECTTIMEOUT => 25,
 			CURLOPT_TIMEOUT => 100,
 		));
 
-		$folderName = ($this->chosenFolderID) ? '/'.DataObject::get_by_id(Folder::class, $this->chosenFolderID)->Name : '';
+		$chosenFolder = ($this->chosenFolderID) ? DataObject::get_by_id(Folder::class, $this->chosenFolderID) : null;
+		$folderName = ($chosenFolder) ? '/' . $chosenFolder->Name : '';
 		$outname = tempnam(ASSETS_PATH, 'convert');
 		$outzip = $outname . '.zip';
 
