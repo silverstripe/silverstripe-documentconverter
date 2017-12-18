@@ -2,6 +2,7 @@
     "name": "silverstripe/documentconverter",
     "description": "Imports OpenOffice-compatible files (doc, docx, etc) into SilverStripe pages and content.",
     "type": "silverstripe-module",
+    "license": "BSD-3-Clause",
     "keywords": [
         "silverstripe",
         "cwp"
