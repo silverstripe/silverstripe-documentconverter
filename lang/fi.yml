@@ -12,7 +12,7 @@ fi:
     ImportedFromFile: 'Tuo sisältö Word-dokumentista'
     IncludeTOC: 'Korvaa tämä sivu sisällysluettelolla'
     KeepSource: 'Säilytä alkuperäinen dokumentti. Lisää linkin sisällysluetteloon, mikäli aktivoitu'
-    'No': 'ei'
+    'No': ei
     SplitHeader: 'Jaa dokumentti sivuiksi'
     publishPages: 'Julkaise muokatut sivut (ei suositella, jollet ole varma muunnoksen lopputulemasta)'
   FileIFrameField:
@@ -23,7 +23,7 @@ fi:
     DROPFILE: 'pudota tiedosto'
     DROPFILES: 'pudota tiedostoja'
     FIELDNOTSET: 'Informaatiota tiedostosta ei löytynyt'
-    FROMCOMPUTER: 'Tietokoneelta'
+    FROMCOMPUTER: Tietokoneelta
     FROMCOMPUTERINFO: 'Siirrä omalta tietokoneelta'
     STARTALL: 'Käynnistä kaikki'
     STARTALLINFO: 'Käynnistä kaikki siirrot'

@@ -8,7 +8,7 @@ de:
     FileWarningHeader: 'Warnung: Import wird alle Inhalte und Unterseiten von dieser Seite entfernen.'
     ImportedFromFile: 'Inhalt aus einem Word-Dokument importieren'
     IncludeTOC: 'Ersetzen Sie diese Seite mit einem Inhaltsverzeichnis.'
-    'No': 'nein'
+    'No': nein
     SplitHeader: 'Dokument in Seiten aufteilen'
   UploadField:
     ATTACHFILE: 'Datei anhängen'
