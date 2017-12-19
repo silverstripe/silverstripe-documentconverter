@@ -1,10 +1,10 @@
 fi:
-  DocumentConverter:
+  SilverStripe\DocumentConverter\DocumentConverter:
     PROCESSFAILED: 'Dokumenttia ei voitu prosessoida, ole hyvä ja tarkista että siirtämäsi dokumentit olivat varmasti .doc tai .docx muodossa.'
     SERVERUNREACHABLE: 'Muunnospalvelimeen ei saatu yhteyttä. Ole hyvä ja yritä myöhemmin uudelleen tai ota yhteyttä järjestelmän ylläpitäjään.'
-  DocumentConverterDecorator:
+  SilverStripe\DocumentConverter\ConvertsDocumentsExtension:
     ImportTab: Tuo
-  DocumentImportField:
+  SilverStripe\DocumentConverter\DocumentConversionField:
     ChooseFolder: 'Valitse kansio, jonne tiedosto tallennetaan'
     EachH1: 'jokaiselle otsikko 1'
     EachH2: 'jokaiselle otsikko 2'
@@ -15,7 +15,7 @@ fi:
     'No': ei
     SplitHeader: 'Jaa dokumentti sivuiksi'
     publishPages: 'Julkaise muokatut sivut (ei suositella, jollet ole varma muunnoksen lopputulemasta)'
-  FileIFrameField:
+  SilverStripe\DocumentConverter\DocumentImporterField:
     ATTACHONCESAVED2: 'Tiedostot voidaan liittää, kun olet tallentanut ensin tietueen.'
   UploadField:
     ATTACHFILE: 'Liitä tiedosto'

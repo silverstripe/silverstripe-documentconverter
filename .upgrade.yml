@@ -1,0 +1,6 @@
+mappings:
+  DocumentConverterDecorator: SilverStripe\DocumentConverter\ConvertsDocumentsExtension
+  DocumentImportField: SilverStripe\DocumentConverter\DocumentConversionField
+  DocumentImportIFrameField_Importer: SilverStripe\DocumentConverter\DocumentConverter
+  DocumentImportInnerField: SilverStripe\DocumentConverter\DocumentImporterField
+  DocumentConverterTest: SilverStripe\DocumentConverter\Tests\DocumentConverterTest

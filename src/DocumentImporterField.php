@@ -1,6 +1,32 @@
 <?php
+
+namespace SilverStripe\DocumentConverter;
+
+use DOMAttr;
+use DOMDocument;
+use DOMElement;
+use DOMXPath;
+use Page;
+use SilverStripe\AssetAdmin\Forms\UploadField;
+use SilverStripe\Assets\File;
+use SilverStripe\Assets\FileNameFilter;
+use SilverStripe\Assets\Folder;
+use SilverStripe\Assets\Image;
+use SilverStripe\Assets\Upload;
+use SilverStripe\Core\Config\Config;
+use SilverStripe\Core\Convert;
+use SilverStripe\Core\Injector\Injector;
+use SilverStripe\Control\Director;
+use SilverStripe\Control\HTTPRequest;
+use SilverStripe\Control\HTTPResponse;
+use SilverStripe\Forms\HTMLEditor\HtmlEditorConfig;
+use SilverStripe\ORM\DataObject;
+use SilverStripe\Versioned\Versioned;
+use Tidy;
+
+
 /**
- * DocumentImportInnerField is built on top of UploadField to access a document
+ * DocumentImporterField is built on top of UploadField to access a document
  * conversion capabilities. The original field is stripped down to allow only
  * uploads from the user's computer, and triggers the conversion when the upload
  * is completed.
@@ -24,16 +50,16 @@
  *
  *  Caveat: there is some coupling between the above parameters.
  */
-class DocumentImportInnerField extends UploadField {
+class DocumentImporterField extends UploadField {
 
-	private static $allowed_actions = array('upload');
+	private static $allowed_actions = ['upload'];
 
-	private static $importer_class = 'DocumentImportIFrameField_Importer';
+	private static $importer_class = DocumentConverter::class;
 
 	/**
 	 * Process the document immediately upon upload.
 	 */
-	public function upload(SS_HTTPRequest $request) {
+	public function upload(HTTPRequest $request) {
 		if($this->isDisabled() || $this->isReadonly()) return $this->httpError(403);
 
 		// Protect against CSRF on destructive action
@@ -45,7 +71,7 @@ class DocumentImportInnerField extends UploadField {
 
 		// Check if the file has been uploaded into the temporary storage.
 		if (!$tmpfile) {
-			$return = array('error' => _t('UploadField.FIELDNOTSET', 'File information not found'));
+			$return = array('error' => _t('SilverStripe\\AssetAdmin\\Forms\\UploadField.FIELDNOTSET', 'File information not found'));
 		} else {
 			$return = array(
 				'name' => $tmpfile['name'],
@@ -75,7 +101,7 @@ class DocumentImportInnerField extends UploadField {
 			}
 		}
 
-		$response = new SS_HTTPResponse(Convert::raw2json(array($return)));
+		$response = HTTPResponse::create(Convert::raw2json(array($return)));
 		$response->addHeader('Content-Type', 'text/plain');
 		return $response;
 	}
@@ -88,9 +114,9 @@ class DocumentImportInnerField extends UploadField {
 	 * @return File Stored file.
 	 */
 	protected function preserveSourceDocument($tmpfile, $chosenFolderID = null) {
-		$upload = new Upload();
+		$upload = Upload::create();
 
-		$file = new File();
+		$file = File::create();
 		$upload->loadIntoFile($tmpfile, $file, $chosenFolderID);
 
 		$page = $this->form->getRecord();
@@ -183,7 +209,7 @@ class DocumentImportInnerField extends UploadField {
 			// Write the chapter page to a subpage.
 			$page = DataObject::get_one('Page', sprintf('"Title" = \'%s\' AND "ParentID" = %d', $subtitle, $record->ID));
 			if(!$page) {
-				$page = new Page();
+				$page = Page::create();
 				$page->ParentID = $record->ID;
 				$page->Title = $subtitle;
 			}
@@ -223,7 +249,7 @@ class DocumentImportInnerField extends UploadField {
 		);
 
 		$sourcePage = $this->form->getRecord();
-		$importerClass = Config::inst()->get('DocumentImportInnerField', 'importer_class');
+		$importerClass = Config::inst()->get(__CLASS__, 'importer_class');
 		$importer = Injector::inst()->create($importerClass, $fileDescriptor, $chosenFolderID);
 		$content = $importer->import();
 
@@ -252,7 +278,8 @@ class DocumentImportInnerField extends UploadField {
 		$xpath = new DOMXPath($doc);
 
 		// make sure any images are added as Image records with a relative link to assets
-		$folderName = ($chosenFolderID) ? DataObject::get_by_id('Folder', $chosenFolderID)->Name : '';
+		$chosenFolder = ($this->chosenFolderID) ? DataObject::get_by_id(Folder::class, $this->chosenFolderID) : null;
+		$folderName = ($chosenFolder) ? '/' . $chosenFolder->Name : '';
 		$imgs = $xpath->query('//img');
 		for($i = 0; $i < $imgs->length; $i++) {
 			$img = $imgs->item($i);
@@ -261,7 +288,7 @@ class DocumentImportInnerField extends UploadField {
 
 			$image = Image::get()->filter(array('Name' => $name, 'ParentID' => (int) $chosenFolderID))->first();
 			if(!($image && $image->exists())) {
-				$image = new Image();
+				$image = Image::create();
 				$image->ParentID = (int) $chosenFolderID;
 				$image->Name = $name;
 				$image->write();
@@ -338,8 +365,20 @@ class DocumentImportInnerField extends UploadField {
 			$this->unusedChildren[$child->ID] = $child;
 		}
 
-		set_error_handler('DocumentImportInnerField_error_handler');
-		global $DocumentImportInnerfield_error;
+		$documentImporterFieldError;
+
+		$documentImporterFieldErrorHandler = function ($errno, $errstr, $errfile, $errline) use ( $documentImporterFieldError ) {
+			$documentImporterFieldError = _t(
+				'SilverStripe\\DocumentConverter\\DocumentConverter.PROCESSFAILED',
+				'Could not process document, please double-check you uploaded a .doc or .docx format.',
+				'Document Converter processes Word documents into HTML.'
+			);
+
+			// Do not cascade the error through other handlers
+			return true;
+		};
+
+		set_error_handler($documentImporterFieldErrorHandler);
 
 		$subtitle = null;
 		$subdoc = new DOMDocument();
@@ -347,7 +386,7 @@ class DocumentImportInnerField extends UploadField {
 		$node = $body->firstChild;
 		$sort = 1;
 		if($splitHeader == 1 || $splitHeader == 2) {
-			while($node && !$DocumentImportInnerfield_error) {
+			while($node && !$documentImporterFieldError) {
 				if($node instanceof DOMElement && $node->tagName == 'h' . $splitHeader) {
 					if($subnode->hasChildNodes()) {
 						$this->writeContent($subtitle, $subdoc, $subnode, $sort, $publishPages);
@@ -367,13 +406,13 @@ class DocumentImportInnerField extends UploadField {
 			$this->writeContent($subtitle, $subdoc, $body, null, $publishPages);
 		}
 
-		if($subnode->hasChildNodes() && !$DocumentImportInnerfield_error) {
+		if($subnode->hasChildNodes() && !$documentImporterFieldError) {
 			$this->writeContent($subtitle, $subdoc, $subnode, null, $publishPages);
 		}
 
 		restore_error_handler();
-		if ($DocumentImportInnerfield_error) {
-			return array('error' => $DocumentImportInnerfield_error);
+		if ($documentImporterFieldError) {
+			return array('error' => $documentImporterFieldError);
 		}
 
 		foreach($this->unusedChildren as $child) {
@@ -392,139 +431,4 @@ class DocumentImportInnerField extends UploadField {
 
 		$sourcePage->write();
 	}
-}
-
-/**
- * Utility class hiding the specifics of the document conversion process.
- */
-class DocumentImportIFrameField_Importer {
-
-	/**
-	 * Associative array of:
-	 * - name: the full name of the file including the extension.
-	 * - path: the path to the file on the local filesystem.
-	 * - mimeType
-	 */
-	protected $fileDescriptor;
-
-	protected $chosenFolderID;
-
-	protected static $docvert_username;
-
-	protected static $docvert_password;
-
-	protected static $docvert_url;
-
-	public static function set_docvert_username($username = null)  {
-		self::$docvert_username = $username;
-	}
-
-	public static function get_docvert_username() {
-		return self::$docvert_username;
-	}
-
-	public static function set_docvert_password($password = null) {
-		self::$docvert_password = $password;
-	}
-
-	public static function get_docvert_password() {
-		return self::$docvert_password;
-	}
-
-	public static function set_docvert_url($url = null) {
-		self::$docvert_url = $url;
-	}
-
-	public static function get_docvert_url() {
-		return self::$docvert_url;
-	}
-
-	public function __construct($fileDescriptor, $chosenFolderID = null) {
-		$this->fileDescriptor = $fileDescriptor;
-		$this->chosenFolderID = $chosenFolderID;
-	}
-
-	public function import() {
-		$ch = curl_init();
-
-		// PHP 5.5+ introduced CURLFile which makes the '@/path/to/file' syntax deprecated.
-		if(class_exists('CURLFile')) {
-			$file = new CURLFile(
-				$this->fileDescriptor['path'],
-				$this->fileDescriptor['mimeType'],
-				$this->fileDescriptor['name']
-			);
-		} else {
-			$file = '@' . $this->fileDescriptor['path'];
-		}
-
-		curl_setopt_array($ch, array(
-			CURLOPT_URL => self::get_docvert_url(),
-			CURLOPT_USERPWD => sprintf('%s:%s', self::get_docvert_username(), self::get_docvert_password()),
-			CURLOPT_POST => 1,
-			CURLOPT_POSTFIELDS => array('file' => $file),
-			CURLOPT_CONNECTTIMEOUT => 25,
-			CURLOPT_TIMEOUT => 100,
-		));
-
-		$folderName = ($this->chosenFolderID) ? '/'.DataObject::get_by_id('Folder', $this->chosenFolderID)->Name : '';
-		$outname = tempnam(ASSETS_PATH, 'convert');
-		$outzip = $outname . '.zip';
-
-		$out = fopen($outzip, 'w');
-		curl_setopt($ch, CURLOPT_FILE, $out);
-		$returnValue = curl_exec($ch);
-		$status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-		curl_close($ch);
-		fclose($out);
-		chmod($outzip, 0777);
-
-		if (!$returnValue || ($status != 200)) {
-			return array('error' => _t(
-				'DocumentConverter.SERVERUNREACHABLE',
-				'Could not contact document conversion server. Please try again later or contact your system administrator.',
-				'Document Converter process Word documents into HTML.'
-			));
-		}
-
-		// extract the converted document into assets
-		// you need php zip, i.e. port install php5-zip
-		$zip = new ZipArchive();
-
-		if($zip->open($outzip)) {
-			$zip->extractTo(ASSETS_PATH .$folderName);
-		}
-
-		// remove temporary files
-		unlink($outname);
-		unlink($outzip);
-
-		if (!file_exists(ASSETS_PATH . $folderName . '/index.html')) {
-			return array('error' =>  _t(
-				'DocumentConverter.PROCESSFAILED',
-				'Could not process document, please double-check you uploaded a .doc or .docx format.',
-				'Document Converter process Word documents into HTML.'
-			));
-		}
-
-		$content = file_get_contents(ASSETS_PATH . $folderName . '/index.html');
-
-		unlink(ASSETS_PATH . $folderName . '/index.html');
-
-		return $content;
-	}
-
-}
-
-static $DocumentImportInnerfield_error = '';
-
-function DocumentImportInnerField_error_handler($errno, $errstr, $errfile, $errline) {
-	global $DocumentImportInnerfield_error;
-	$DocumentImportInnerfield_error = _t(
-		'DocumentConverter.PROCESSFAILED',
-		'Could not process document, please double-check you uploaded a .doc or .docx format.',
-		'Document Converter process Word documents into HTML.'
-	);
-
-	return true;
 }

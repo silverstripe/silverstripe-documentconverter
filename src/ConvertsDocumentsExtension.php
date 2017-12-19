@@ -1,9 +1,15 @@
 <?php
 
-class DocumentConverterDecorator extends DataExtension {
+namespace SilverStripe\DocumentConverter;
 
-	public static $has_one = array(
-		'ImportedFromFile' => 'File'
+use SilverStripe\Assets\File;
+use SilverStripe\Forms\FieldList;
+use SilverStripe\ORM\DataExtension;
+
+class ConvertsDocumentsExtension extends DataExtension {
+
+	private static $has_one = array(
+		'ImportedFromFile' => File::class
 	);
 
 	function updateCMSFields(FieldList $fields) {
@@ -18,8 +24,8 @@ class DocumentConverterDecorator extends DataExtension {
 		 */
 		$fields->findOrMakeTab(
 			'Root.Import',
-			_t('DocumentConverterDecorator.ImportTab', 'Import')
+			_t(__CLASS__ . '.ImportTab', 'Import')
 		);
-		$fields->addFieldToTab('Root.Import', new DocumentImportField());
+		$fields->addFieldToTab('Root.Import', DocumentConversionField::create());
 	}
 }

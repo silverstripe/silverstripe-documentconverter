@@ -1,10 +1,10 @@
 mi:
-  DocumentConverter:
+  SilverStripe\DocumentConverter\DocumentConverter:
     PROCESSFAILED: 'Kāore i taea te tukatuka te tuhinga, whakatūturu pūtia kua tukuna atu he hōputu .doc, .docx rānei.'
     SERVERUNREACHABLE: 'Kāore i taea te whakapā ki te tūmau huri tuhinga. Me ngana anō ā muri ake, ka whakapā rānei ki tō kaiwhakahaere pūnaha.'
-  DocumentConverterDecorator:
+  DocumentCSilverStripe\DocumentConverter\ConvertsDocumentsExtension:
     ImportTab: Kawemai
-  FileIFrameField:
+  SilverStripe\DocumentConverter\DocumentImporterField:
     ATTACHONCESAVED2: 'Ka taea te āpiti kōnae ina oti te tiaki tuatahi o te pūkete.'
   UploadField:
     ATTACHFILE: 'Tāpiritia tētahi kōnae'

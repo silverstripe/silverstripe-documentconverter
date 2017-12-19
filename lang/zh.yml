@@ -1,11 +1,11 @@
 zh:
-  DocumentConverter:
+  SilverStripe\DocumentConverter\DocumentConverter:
     PROCESSFAILED: '无法处理文档，请复核您上传的是 .doc 或 .docx 格式。'
     SERVERUNREACHABLE: '无法连到文档转换服务器。请稍后再试或联系系统管理员。'
-  DocumentConverterDecorator:
-    ImportTab: '导入'
-  DocumentImportField:
-    ChooseFolder: 选择文件夹保存此文件
+  SilverStripe\DocumentConverter\ConvertsDocumentsExtension:
+    ImportTab: 导入
+  SilverStripe\DocumentConverter\DocumentConversionField:
+    ChooseFolder: '选择文件夹保存此文件'
     EachH1: '每个标题1'
     EachH2: '每个标题2'
     FileWarningHeader: '警告：导入将删除所有内容和子页面。'
@@ -14,7 +14,7 @@ zh:
     KeepSource: '保留原始文档。如果允许的话，在 TOC 上为其添加一个链接。'
     SplitHeader: 拆分文件转换成网页
     publishPages: '发布修改页面（除非你确认转换结果，否则不推荐）'
-  FileIFrameField:
+  SilverStripe\DocumentConverter\DocumentImporterField:
     ATTACHONCESAVED2: '只要您第一次保存记录，文件就可以被附加。'
   UploadField:
     ATTACHFILE: '附加一个文件'

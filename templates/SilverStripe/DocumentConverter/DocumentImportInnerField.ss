@@ -29,7 +29,7 @@
 	<% if isSaveable %>
 	<% else %>
 		<div class="ss-uploadfield-item">
-			<em><% _t('FileIFrameField.ATTACHONCESAVED2', 'Files can be attached once you have saved the record for the first time.') %></em>
+			<em><% _t('DocumentImporterField.ATTACHONCESAVED2', 'Files can be attached once you have saved the record for the first time.') %></em>
 		</div>
 	<% end_if %>
 <% else %>
