@@ -23,6 +23,7 @@ use SilverStripe\Forms\HTMLEditor\HTMLEditorConfig;
 use SilverStripe\Forms\HTMLEditor\HTMLEditorSanitiser;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\Versioned\Versioned;
+use SilverStripe\View\Parsers\HTMLValue;
 use Tidy;
 
 /**
@@ -114,7 +115,7 @@ class ImportField extends UploadField
         }
 
         $response = HTTPResponse::create(Convert::raw2json([$return]));
-        $response->addHeader('Content-Type', 'text/plain');
+        $response->addHeader('Content-Type', 'application/json');
         return $response;
     }
 
@@ -302,7 +303,7 @@ class ImportField extends UploadField
             $fragment[] = $child->value;
         }
 
-        $htmlValue = Injector::inst()->create('HTMLValue', implode("\n", $fragment));
+        $htmlValue = Injector::inst()->create(HTMLValue::class, implode("\n", $fragment));
 
         // Sanitise
         $santiser = Injector::inst()->create(HTMLEditorSanitiser::class, HTMLEditorConfig::get_active());
@@ -488,12 +489,12 @@ class ImportField extends UploadField
             $origStage = Versioned::current_stage();
 
             Versioned::reading_stage('Stage');
-            $clone = clone $child;
-            $clone->delete();
+            $draft = clone $child;
+            $draft->delete();
 
             Versioned::reading_stage('Live');
-            $clone = clone $child;
-            $clone->delete();
+            $published = clone $child;
+            $published->delete();
 
             Versioned::reading_stage($origStage);
         }
