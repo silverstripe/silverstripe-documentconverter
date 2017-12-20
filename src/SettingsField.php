@@ -17,9 +17,9 @@ use SilverStripe\View\Requirements;
  * Includes several options fields, which are bundled together with an UploadField
  * into a CompositeField.
  */
-class DocumentConversionField extends CompositeField {
+class SettingsField extends CompositeField {
 	/**
-	 * Reference to the inner upload field (DocumentImporterField).
+	 * Reference to the inner upload field (ImportField).
 	 */
 	private $innerField = null;
 
@@ -35,7 +35,7 @@ class DocumentConversionField extends CompositeField {
 		// Add JS specific to this field.
 		Requirements::javascript('silverstripe/documentconverter: javascript/DocumentConversionField.js');
 
-		$fields = FieldList::create(array(
+		$fields = FieldList::create([
 			HeaderField::create(
 				'FileWarningHeader', 
 				_t(
@@ -50,11 +50,11 @@ class DocumentConversionField extends CompositeField {
 					__CLASS__ . '.SplitHeader',
 					'Split document into pages'
 				), 
-				array(
+				[
 					0 => _t(__CLASS__ . '.No','no'), 
 					1 => _t(__CLASS__ . '.EachH1','for each heading 1'), 
 					2 => _t(__CLASS__ . '.EachH2','for each heading 2')
-				)
+				]
 			),
 			$keepSource = CheckboxField::create(
 				'DocumentConversionField-KeepSource', 
@@ -79,11 +79,11 @@ class DocumentConversionField extends CompositeField {
 					'Publish modified pages (not recommended unless you are sure about the conversion outcome)'
 				)
 			),
-			$this->innerField = DocumentImporterField::create(
+			$this->innerField = ImportField::create(
 				'ImportedFromFile', 
 				_t(__CLASS__ . '.ImportedFromFile','Import content from a word document')
-			),
-		));
+			)
+		]);
 
 		// Prevent the warning popup that appears when navigating away from the page.
 		$splitHeader->addExtraClass('no-change-track');

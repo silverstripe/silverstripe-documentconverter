@@ -19,7 +19,8 @@ use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Control\Director;
 use SilverStripe\Control\HTTPRequest;
 use SilverStripe\Control\HTTPResponse;
-use SilverStripe\Forms\HTMLEditor\HtmlEditorConfig;
+use SilverStripe\Forms\HTMLEditor\HTMLEditorConfig;
+use SilverStripe\Forms\HTMLEditor\HTMLEditorSanitiser;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\Versioned\Versioned;
 use Tidy;
@@ -50,11 +51,11 @@ use Tidy;
  *
  *  Caveat: there is some coupling between the above parameters.
  */
-class DocumentImporterField extends UploadField {
+class ImportField extends UploadField {
 
 	private static $allowed_actions = ['upload'];
 
-	private static $importer_class = DocumentConverter::class;
+	private static $importer_class = ServiceConnector::class;
 
 	/**
 	 * Process the document immediately upon upload.
@@ -66,19 +67,22 @@ class DocumentImporterField extends UploadField {
 		$token = $this->getForm()->getSecurityToken();
 		if(!$token->checkRequest($request)) return $this->httpError(400);
 
-		$name = $this->getName();
-		$tmpfile = $request->postVar($name);
+		$tmpfile = $request->postVar('Upload');
 
 		// Check if the file has been uploaded into the temporary storage.
 		if (!$tmpfile) {
-			$return = array('error' => _t('SilverStripe\\AssetAdmin\\Forms\\UploadField.FIELDNOTSET', 'File information not found'));
+			$return = [
+				'error' => _t(
+					'SilverStripe\\AssetAdmin\\Forms\\UploadField.FIELDNOTSET', 'File information not found'
+				)
+			];
 		} else {
-			$return = array(
+			$return = [
 				'name' => $tmpfile['name'],
 				'size' => $tmpfile['size'],
 				'type' => $tmpfile['type'],
 				'error' => $tmpfile['error']
-			);
+			];
 		}
 
 		if (!$return['error']) {
@@ -101,7 +105,7 @@ class DocumentImporterField extends UploadField {
 			}
 		}
 
-		$response = HTTPResponse::create(Convert::raw2json(array($return)));
+		$response = HTTPResponse::create(Convert::raw2json([$return]));
 		$response->addHeader('Content-Type', 'text/plain');
 		return $response;
 	}
@@ -242,14 +246,14 @@ class DocumentImporterField extends UploadField {
 	 */
 	public function importFromPOST($tmpFile, $splitHeader = false, $publishPages = false, $chosenFolderID = null) {
 
-		$fileDescriptor = array(
+		$fileDescriptor = [
 			'name' => $tmpFile['name'],
 			'path' => $tmpFile['tmp_name'],
 			'mimeType' => $tmpFile['type']
-		);
+		];
 
 		$sourcePage = $this->form->getRecord();
-		$importerClass = Config::inst()->get(__CLASS__, 'importer_class');
+		$importerClass = $this->config()->get('importer_class');
 		$importer = Injector::inst()->create($importerClass, $fileDescriptor, $chosenFolderID);
 		$content = $importer->import();
 
@@ -259,7 +263,7 @@ class DocumentImporterField extends UploadField {
 
 		// Clean up with tidy (requires tidy module)
 		$tidy = new Tidy();
-		$tidy->parseString($content, array('output-xhtml' => true), 'utf8');
+		$tidy->parseString($content, ['output-xhtml' => true], 'utf8');
 		$tidy->cleanRepair();
 
 		$fragment = [];
@@ -270,7 +274,7 @@ class DocumentImporterField extends UploadField {
 		$htmlValue = Injector::inst()->create('HTMLValue', implode("\n", $fragment));
 
 		// Sanitise
-		$santiser = Injector::inst()->create('HtmlEditorSanitiser', HtmlEditorConfig::get_active());
+		$santiser = Injector::inst()->create(HTMLEditorSanitiser::class, HTMLEditorConfig::get_active());
 		$santiser->sanitise($htmlValue);
 
 		// Load in the HTML
@@ -286,10 +290,13 @@ class DocumentImporterField extends UploadField {
 			$originalPath = 'assets/' . $folderName . '/' . $img->getAttribute('src');
 			$name = FileNameFilter::create()->filter(basename($originalPath));
 
-			$image = Image::get()->filter(array('Name' => $name, 'ParentID' => (int) $chosenFolderID))->first();
+			$image = Image::get()->filter([
+				'Name' => $name,
+				'ParentID' => (int)$chosenFolderID
+			])->first();
 			if(!($image && $image->exists())) {
 				$image = Image::create();
-				$image->ParentID = (int) $chosenFolderID;
+				$image->ParentID = (int)$chosenFolderID;
 				$image->Name = $name;
 				$image->write();
 			}
@@ -301,10 +308,10 @@ class DocumentImporterField extends UploadField {
 			$img->setAttribute('src', $image->getFilename());
 		}
 
-		$remove_rules = array(
+		$remove_rules = [
 			'//h1[.//font[not(@face)]]' => 'p', // Change any headers that contain font tags (other than font face tags) into p elements
 			'//font' // Remove any font tags
-		);
+		];
 
 		foreach($remove_rules as $rule => $parenttag) {
 			if(is_numeric($rule)) {
@@ -312,7 +319,7 @@ class DocumentImporterField extends UploadField {
 				$parenttag = null;
 			}
 
-			$nodes = array();
+			$nodes = [];
 			foreach($xpath->query($rule) as $node) $nodes[] = $node;
 
 			foreach($nodes as $node) {
@@ -340,17 +347,17 @@ class DocumentImporterField extends UploadField {
 		$els = $doc->getElementsByTagName('*');
 
 		// Remove a bunch of unwanted elements
-		$clean = array(
+		$clean = [
 			'//p[not(descendant-or-self::text() | descendant-or-self::img)]', // Empty paragraphs
 			'//*[self::h1 | self::h2 | self::h3 | self::h4 | self::h5 | self::h6][not(descendant-or-self::text() | descendant-or-self::img)]', // Empty headers
 			'//a[not(@href)]', // Anchors
 			'//br' // BR tags
-		);
+		];
 
 		foreach($clean as $query) {
 			// First get all the nodes. Need to build array, as they'll disappear from the nodelist while we're deleteing them, causing the indexing
 			// to screw up.
-			$nodes = array();
+			$nodes = [];
 			foreach($xpath->query($query) as $node) $nodes[] = $node;
 
 			// Then remove them all
@@ -360,16 +367,16 @@ class DocumentImporterField extends UploadField {
 		// Now split the document into portions by H1
 		$body = $doc->getElementsByTagName('body')->item(0);
 
-		$this->unusedChildren = array();
+		$this->unusedChildren = [];
 		foreach($sourcePage->Children() as $child) {
 			$this->unusedChildren[$child->ID] = $child;
 		}
 
-		$documentImporterFieldError;
+		$documentImporterFieldError = false;
 
 		$documentImporterFieldErrorHandler = function ($errno, $errstr, $errfile, $errline) use ( $documentImporterFieldError ) {
 			$documentImporterFieldError = _t(
-				'SilverStripe\\DocumentConverter\\DocumentConverter.PROCESSFAILED',
+				'SilverStripe\\DocumentConverter\\ServiceConnector.PROCESSFAILED',
 				'Could not process document, please double-check you uploaded a .doc or .docx format.',
 				'Document Converter processes Word documents into HTML.'
 			);
@@ -412,7 +419,7 @@ class DocumentImporterField extends UploadField {
 
 		restore_error_handler();
 		if ($documentImporterFieldError) {
-			return array('error' => $documentImporterFieldError);
+			return ['error' => $documentImporterFieldError];
 		}
 
 		foreach($this->unusedChildren as $child) {

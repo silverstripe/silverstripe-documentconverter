@@ -1,7 +1,7 @@
 de:
-  SilverStripe\DocumentConverter\ConvertsDocumentsExtension:
+  SilverStripe\DocumentConverter\PageExtension:
     ImportTab: Importieren
-  SilverStripe\DocumentConverter\DocumentConversionField:
+  SilverStripe\DocumentConverter\SettingsField:
     ChooseFolder: 'Wählen Sie einen Ordner zum Speichern dieser Datei aus'
     EachH1: 'für jede Überschrift 1'
     EachH2: 'für jede Überschrift 2'

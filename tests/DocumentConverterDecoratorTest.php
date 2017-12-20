@@ -2,11 +2,9 @@
 
 class DocumentConverterDecoratorTest extends SapphireTest
 {
-    protected $requiredExtensions = array(
-        'SiteTree' => array(
-            'DocumentConverterDecorator',
-        ),
-    );
+    protected $requiredExtensions = [
+        'SiteTree' => ['DocumentConverterDecorator']
+    ];
 
     public function testFieldListHasDocumentImportField()
     {
