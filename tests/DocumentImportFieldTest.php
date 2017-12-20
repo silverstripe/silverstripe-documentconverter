@@ -1,5 +1,9 @@
 <?php
 
+namespace SilverStripe\DocumentConverter\Tests;
+
+use SilverStripe\Dev\SapphireTest;
+
 class DocumentImportFieldTest extends SapphireTest
 {
     /**
