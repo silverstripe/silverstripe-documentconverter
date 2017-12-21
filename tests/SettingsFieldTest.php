@@ -63,7 +63,7 @@ class SettingsFieldTest extends SapphireTest
             'IncludeTOC' => CheckboxField::class,
             'PublishPages' => CheckboxField::class
         ];
-        foreach($settingsFields as $fieldName => $className) {
+        foreach ($settingsFields as $fieldName => $className) {
             $field = $fields->fieldByName(
                 'DocumentConversionSettings-' . $fieldName
             );
