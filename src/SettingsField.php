@@ -31,16 +31,10 @@ class SettingsField extends CompositeField
      */
     public function __construct($children = null)
     {
-        if (is_string($children)) {
-            throw new InvalidArgumentException(
-                'DocumentConversionField::__construct does not accept a name as its parameter,' .
-                ' it defaults to "ImportedFromFile" instead. Use DocumentConversionField::getInnerField()->setName()' .
-                ' if you want to change it.'
-            );
-        }
         if ($children) {
+            $class = get_class();
             throw new InvalidArgumentException(
-                'DocumentConversionField::__construct provides its own fields and does not accept additional children.'
+                "${class}::__construct does not accept extra parameters."
             );
         }
 
@@ -57,7 +51,7 @@ class SettingsField extends CompositeField
                 4
             ),
             $splitHeader = DropdownField::create(
-                'DocumentConversionField-SplitHeader',
+                'DocumentConversionSettings-SplitHeader',
                 _t(
                     __CLASS__ . '.SplitHeader',
                     'Split document into pages'
@@ -69,23 +63,23 @@ class SettingsField extends CompositeField
                 ]
             ),
             $keepSource = CheckboxField::create(
-                'DocumentConversionField-KeepSource',
+                'DocumentConversionSettings-KeepSource',
                 _t(
                     __CLASS__ . '.KeepSource',
                     'Keep the original document. Adds a link to it on TOC, if enabled.'
                 )
             ),
             $chosenFolderID = TreeDropdownField::create(
-                'DocumentConversionField-ChosenFolderID',
+                'DocumentConversionSettings-ChosenFolderID',
                 _t(__CLASS__ . '.ChooseFolder', 'Choose a folder to save this file'),
                 Folder::class
             ),
             $includeTOC = CheckboxField::create(
-                'DocumentConversionField-IncludeTOC',
+                'DocumentConversionSettings-IncludeTOC',
                 _t(__CLASS__ . '.IncludeTOC', 'Replace this page with a Table of Contents.')
             ),
             $publishPages = CheckboxField::create(
-                'DocumentConversionField-PublishPages',
+                'DocumentConversionSettings-PublishPages',
                 _t(
                     __CLASS__ . '.publishPages',
                     'Publish modified pages (not recommended unless you are sure about the conversion outcome)'
