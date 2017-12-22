@@ -5,9 +5,13 @@
     "license": "BSD-3-Clause",
 	"keywords": ["silverstripe", "cwp"],
 	"require": {
-		"silverstripe/cms": "^4"
+		"silverstripe/cms": "^4",
+		"silverstripe/asset-admin": "^1"
 	},
     "require-dev": {
+        "ext-curl": "*",
+        "ext-tidy": "*",
+        "ext-zip": "*",
         "phpunit/phpunit": "^5.7",
         "squizlabs/php_codesniffer": "^3.0"
     },
