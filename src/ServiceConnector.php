@@ -66,86 +66,76 @@ class ServiceConnector
         $this->chosenFolderID = $chosenFolderID;
     }
 
+
+    /**
+     * Retrieves detail in priority order from
+     * 1. local instance field
+     * 2. Config
+     * 3. Environment
+     *
+     * @param string $detail key name for detail
+     * @return string the value for that key
+     */
+    protected function getDetail($detail)
+    {
+        $fromDetails = $this->docvertDetails[$detail];
+        if ($fromDetails) {
+            return $fromDetails;
+        }
+        
+        $fromConfig = $this->config()->get($detail);
+        if ($fromConfig) {
+            return $fromConfig;
+        }
+
+        $fromEnv = Environment::getEnv('DOCVERT_' . strtoupper($detail));
+        if ($fromEnv) {
+            return $fromEnv;
+        }
+    }
+
     public function setUsername($username = null)
     {
         $this->docvertDetails['username'] = $username;
+        return $this;
     }
 
     public function getUsername()
     {
-        $username = $this->docvertDetails['username'];
-        if ($username) {
-            return $username;
-        }
-        $username = $this->config()->get('username');
-        if ($username) {
-            return $username;
-        }
-        $username = Environment::getEnv('DOCVERT_USERNAME');
-        if ($username) {
-            return $username;
-        }
-        return null;
+        return $this->getDetail('username');
     }
 
     public function setPassword($password = null)
     {
         $this->docvertDetails['password'] = $password;
+        return $this;
     }
 
     public function getPassword()
     {
-        $username = $this->docvertDetails['password'];
-        if ($username) {
-            return $username;
-        }
-        $username = $this->config()->get('password');
-        if ($username) {
-            return $username;
-        }
-        $username = Environment::getEnv('DOCVERT_PASSWORD');
-        if ($username) {
-            return $username;
-        }
-        return null;
+        return $this->getDetail('password');
     }
 
     public function setUrl($url = null)
     {
         $this->docvertDetails['url'] = $url;
+        return $this;
     }
 
     public function getUrl()
     {
-        $username = $this->docvertDetails['url'];
-        if ($username) {
-            return $username;
-        }
-        $username = $this->config()->get('url');
-        if ($username) {
-            return $username;
-        }
-        $username = Environment::getEnv('DOCVERT_URL');
-        if ($username) {
-            return $username;
-        }
-        return null;
+        return $this->getDetail('url');
     }
 
     public function import()
     {
         $ch = curl_init();
 
-        // PHP 5.5+ introduced CURLFile which makes the '@/path/to/file' syntax deprecated.
-        if (class_exists('CURLFile')) {
-            $file = new CURLFile(
-                $this->fileDescriptor['path'],
-                $this->fileDescriptor['mimeType'],
-                $this->fileDescriptor['name']
-            );
-        } else {
-            $file = '@' . $this->fileDescriptor['path'];
-        }
+        $file = new CURLFile(
+            $this->fileDescriptor['path'],
+            $this->fileDescriptor['mimeType'],
+            $this->fileDescriptor['name']
+        );
 
         curl_setopt_array($ch, [
             CURLOPT_URL => $this->getUrl(),

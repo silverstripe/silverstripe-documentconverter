@@ -195,7 +195,7 @@ class ImportField extends UploadField
             // Store the result
             $page->write();
             if ($publishPages) {
-                $page->doPublish();
+                $page->publishRecursive();
             }
         }
     }
@@ -253,7 +253,7 @@ class ImportField extends UploadField
             $page->Content = $this->getBodyText($subdoc, $subnode);
             $page->write();
             if ($publishPages) {
-                $page->doPublish();
+                $page->publishRecursive();
             }
         } else {
             // Write to the master page.
@@ -261,7 +261,7 @@ class ImportField extends UploadField
             $record->write();
 
             if ($publishPages) {
-                $record->doPublish();
+                $record->publishRecursive();
             }
         }
     }
@@ -488,15 +488,15 @@ class ImportField extends UploadField
         foreach ($this->unusedChildren as $child) {
             $origStage = Versioned::current_stage();
 
-            Versioned::reading_stage('Stage');
+            Versioned::set_stage(Versioned::DRAFT);
             $draft = clone $child;
             $draft->delete();
 
-            Versioned::reading_stage('Live');
+            Versioned::set_stage(Versioned::LIVE);
             $published = clone $child;
             $published->delete();
 
-            Versioned::reading_stage($origStage);
+            Versioned::set_stage($origStage);
         }
 
         $sourcePage->write();

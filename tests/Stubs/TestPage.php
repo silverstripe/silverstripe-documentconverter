@@ -8,6 +8,7 @@ use Page;
 
 class TestPage extends Page implements TestOnly
 {
+    private static $table_name = 'DocvertTestPage';
     private static $extensions = [PageExtension::class];
     private static $defaults = [
         'Content' => '<h1>Default TestPage</h1><p>With pre-import content.</p>'
