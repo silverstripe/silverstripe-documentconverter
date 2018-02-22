@@ -18,7 +18,7 @@ class PageExtension extends DataExtension
         /*
         // Currently the ToggleCompositeField plays badly with TreeDropdownField formatting.
         // Could be switched back in the future, if this is fixed.
-        $fields->addFieldToTab('Root.Main', 
+        $fields->addFieldToTab('Root.Main',
             ToggleCompositeField::create('Import', 'Import', [
                 SettingsField::create()
             ])->setHeadingLevel(4)
