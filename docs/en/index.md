@@ -8,7 +8,7 @@ First of all it is important to know that the import process will replace the co
 
 ### Interface
 
-![](_images/interface.jpg)
+![](_images/interface.png)
 
 If you upload the document straight away the simplest scenario will be executed:
 

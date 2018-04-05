@@ -6,7 +6,7 @@
 
 ## Overview
 
-The module creates an RSS feed on each page with their change history, as well as one for the entire site.
+The module adds functionality to import OpenOffice-compatible files (doc, docx, etc) into SilverStripe pages and content.
 
 ## Requirements
 
@@ -17,6 +17,15 @@ The module creates an RSS feed on each page with their change history, as well a
 ## Installation
 
 Install with [composer](https://getcomposer.org/) by running `composer require silverstripe/documentconverter` in the root of your SilverStripe project.
+
+## Configuration
+
+You will need to set the following three environment variables:
+- `DOCVERT_USERNAME`
+- `DOCVERT_PASSWORD`
+- `DOCVERT_URL`
+
+**Note:** This module is primarily designed for Common Web Platform (CWP) clients. There will be additional setup required to use this module as intended, if you are not using the CWP government edition.
 
 ## User Guide
 
