@@ -44,10 +44,10 @@ class SettingsField extends CompositeField
         $fields = FieldList::create([
             HeaderField::create(
                 'FileWarningHeader',
-                _t(
+                '<div class="alert alert-warning">' . _t(
                     __CLASS__ . '.FileWarningHeader',
                     'Warning: import will remove all content and subpages of this page.'
-                ),
+                ) . '</div>',
                 4
             ),
             $splitHeader = DropdownField::create(
