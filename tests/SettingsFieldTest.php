@@ -9,6 +9,7 @@ use SilverStripe\Forms\CheckboxField;
 use SilverStripe\Forms\DropdownField;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\HeaderField;
+use SilverStripe\Forms\LiteralField;
 use SilverStripe\Forms\TreeDropdownField;
 use SilverStripe\View\Requirements;
 
@@ -48,7 +49,7 @@ class SettingsFieldTest extends SapphireTest
         $this->assertInstanceOf(FieldList::class, $fields);
 
         // We don't need to check that all of the fields are there, but just check a couple
-        $this->assertInstanceOf(HeaderField::class, $fields->fieldByName('FileWarningHeader'));
+        $this->assertInstanceOf(LiteralField::class, $fields->fieldByName('FileWarningHeader'));
         $innerField = $fields->fieldByName('ImportedFromFile');
         $this->assertInstanceOf(ImportField::class, $innerField);
 

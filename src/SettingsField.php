@@ -9,6 +9,7 @@ use SilverStripe\Forms\CompositeField;
 use SilverStripe\Forms\DropdownField;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\HeaderField;
+use SilverStripe\Forms\LiteralField;
 use SilverStripe\Forms\TreeDropdownField;
 use SilverStripe\View\Requirements;
 
@@ -42,12 +43,12 @@ class SettingsField extends CompositeField
         Requirements::javascript('silverstripe/documentconverter: javascript/DocumentConversionField.js');
 
         $fields = FieldList::create([
-            HeaderField::create(
+            LiteralField::create(
                 'FileWarningHeader',
-                _t(
+                '<div class="alert alert-warning">' . _t(
                     __CLASS__ . '.FileWarningHeader',
                     'Warning: import will remove all content and subpages of this page.'
-                ),
+                ) . '</div>',
                 4
             ),
             $splitHeader = DropdownField::create(
