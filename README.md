@@ -30,7 +30,7 @@ You will need to set the following three environment variables:
 
 ## User Guide
 
-For usage instructions see [user manual](docs/en/index.md).
+For usage instructions see the [User guide](docs/en/userguide/index.md).
 
 ### Translations
 
