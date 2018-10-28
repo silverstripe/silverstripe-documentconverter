@@ -114,7 +114,7 @@ class ImportField extends UploadField
             }
         }
 
-        $response = HTTPResponse::create(Convert::raw2json([$return]));
+        $response = HTTPResponse::create(json_encode([$return]));
         $response->addHeader('Content-Type', 'application/json');
         return $response;
     }
