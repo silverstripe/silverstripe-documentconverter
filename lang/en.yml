@@ -1,9 +1,13 @@
 en:
+  DocumentImporterField:
+    ATTACHONCESAVED2: 'Files can be attached once you have saved the record for the first time.'
+  SilverStripe\AssetAdmin\Forms\UploadField:
+    FIELDNOTSET: 'File information not found'
+  SilverStripe\DocumentConverter\PageExtension:
+    ImportTab: Import
   SilverStripe\DocumentConverter\ServiceConnector:
     PROCESSFAILED: 'Could not process document, please double-check you uploaded a .doc or .docx format.'
     SERVERUNREACHABLE: 'Could not contact document conversion server. Please try again later or contact your system administrator.'
-  SilverStripe\DocumentConverter\PageExtension:
-    ImportTab: Import
   SilverStripe\DocumentConverter\SettingsField:
     ChooseFolder: 'Choose a folder to save this file'
     EachH1: 'for each heading 1'
@@ -15,14 +19,11 @@ en:
     'No': 'no'
     SplitHeader: 'Split document into pages'
     publishPages: 'Publish modified pages (not recommended unless you are sure about the conversion outcome)'
-  SilverStripe\DocumentConverter\ImportField:
-    ATTACHONCESAVED2: 'Files can be attached once you have saved the record for the first time.'
   UploadField:
     ATTACHFILE: 'Attach a file'
     ATTACHFILES: 'Attach files'
     DROPFILE: 'drop a file'
     DROPFILES: 'drop files'
-    FIELDNOTSET: 'File information not found'
     FROMCOMPUTER: 'From your computer'
     FROMCOMPUTERINFO: 'Upload from your computer'
     STARTALL: 'Start all'
