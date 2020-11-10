@@ -12,7 +12,7 @@
         "ext-curl": "*",
         "ext-tidy": "*",
         "ext-zip": "*",
-        "phpunit/phpunit": "^5.7",
+        "sminnee/phpunit": "^5.7",
         "squizlabs/php_codesniffer": "^3.0"
     },
     "autoload": {
