@@ -1,9 +1,21 @@
 de:
+  SilverStripe\DocumentConverter\PageExtension:
+    ImportTab: Importieren
+  SilverStripe\DocumentConverter\SettingsField:
+    ChooseFolder: 'Wählen Sie einen Ordner zum Speichern dieser Datei aus'
+    EachH1: 'für jede Überschrift 1'
+    EachH2: 'für jede Überschrift 2'
+    FileWarningHeader: 'Warnung: Import wird alle Inhalte und Unterseiten von dieser Seite entfernen.'
+    ImportedFromFile: 'Inhalt aus einem Word-Dokument importieren'
+    IncludeTOC: 'Ersetzen Sie diese Seite mit einem Inhaltsverzeichnis.'
+    'No': nein
+    SplitHeader: 'Dokument in Seiten aufteilen'
   UploadField:
     ATTACHFILE: 'Datei anhängen'
     ATTACHFILES: 'Dateien anhängen'
     DROPFILE: 'Datei fallenlassen'
     DROPFILES: 'Dateien fallenlassen'
+    FIELDNOTSET: 'Dateiinformation nicht gefunden'
     FROMCOMPUTER: 'Von Ihrem Computer'
     FROMCOMPUTERINFO: 'Von Ihrem Computer hochladen'
     STARTALL: 'Alle starten'
