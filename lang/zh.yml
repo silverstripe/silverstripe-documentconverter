@@ -17,12 +17,12 @@ zh:
   SilverStripe\DocumentConverter\ImportField:
     ATTACHONCESAVED2: '只要您第一次保存记录，文件就可以被附加。'
   UploadField:
-    ATTACHFILE: '附加一个文件'
-    ATTACHFILES: '附加文件'
+    ATTACHFILE: 附加一个文件
+    ATTACHFILES: 附加文件
     DROPFILE: 拖放一个文件
     DROPFILES: 拖放文件
     FIELDNOTSET: 文件信息未找到
     FROMCOMPUTER: 从您的电脑
-    FROMCOMPUTERINFO: '从您的电脑上传'
-    STARTALL: '启动全部'
-    STARTALLINFO: '启动全部上传'
+    FROMCOMPUTERINFO: 从您的电脑上传
+    STARTALL: 启动全部
+    STARTALLINFO: 启动全部上传

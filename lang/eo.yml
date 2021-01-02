@@ -1,9 +1,13 @@
 eo:
+  DocumentImporterField:
+    ATTACHONCESAVED2: 'Vi povas alligi dosierojn kiam vi jam konservis la rikordon unufoje.'
+  SilverStripe\AssetAdmin\Forms\UploadField:
+    FIELDNOTSET: 'Ne trovis dosieran informon'
+  SilverStripe\DocumentConverter\PageExtension:
+    ImportTab: Importi
   SilverStripe\DocumentConverter\ServiceConnector:
     PROCESSFAILED: 'Ne povis trakti dokumenton. Bonvole kontrolu ke vi alŝutis en formato .doc aŭ .docx.'
     SERVERUNREACHABLE: 'Ne povis kontakti servilon por konverti dokumenton. Bonvole reprovu postiome aŭ kontaktu vian administranton.'
-  SilverStripe\DocumentConverter\PageExtension:
-    ImportTab: Importi
   SilverStripe\DocumentConverter\SettingsField:
     ChooseFolder: 'Elektu dosierujon en kiu konservi la dosieron'
     EachH1: 'por ĉiu titolo 1'
