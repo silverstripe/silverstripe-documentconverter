@@ -15,19 +15,15 @@ use SilverStripe\View\Requirements;
 
 class SettingsFieldTest extends SapphireTest
 {
-    /**
-     * @expectedException InvalidArgumentException
-     */
     public function testConstructorThrowsExceptionWhenGivenString()
     {
+        $this->expectException(\InvalidArgumentException::class);
         new SettingsField('exception time!');
     }
 
-    /**
-     * @expectedException InvalidArgumentException
-     */
     public function testConstructorThrowsExceptionWhenGivenChildren()
     {
+        $this->expectException(\InvalidArgumentException::class);
         new SettingsField(['i', 'don\'t', 'like', 'kids']);
     }
 
@@ -69,7 +65,7 @@ class SettingsFieldTest extends SapphireTest
                 'DocumentConversionSettings-' . $fieldName
             );
             $this->assertInstanceOf($className, $field);
-            $this->assertContains('no-change-track', $field->extraClass());
+            $this->assertStringContainsString('no-change-track', $field->extraClass());
         }
     }
 }
