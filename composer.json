@@ -1,14 +1,17 @@
 {
-	"name": "silverstripe/documentconverter",
-	"description": "Imports OpenOffice-compatible files (doc, docx, etc) into SilverStripe pages and content.",
-	"type": "silverstripe-vendormodule",
+    "name": "silverstripe/documentconverter",
+    "description": "Imports OpenOffice-compatible files (doc, docx, etc) into SilverStripe pages and content.",
+    "type": "silverstripe-vendormodule",
     "license": "BSD-3-Clause",
-	"keywords": ["silverstripe", "cwp"],
-	"require": {
+    "keywords": [
+        "silverstripe",
+        "cwp"
+    ],
+    "require": {
         "php": "^7.3 || ^8.0",
-		"silverstripe/cms": "^4",
-		"silverstripe/asset-admin": "^1"
-	},
+        "silverstripe/cms": "^4",
+        "silverstripe/asset-admin": "^1"
+    },
     "require-dev": {
         "ext-curl": "*",
         "ext-tidy": "*",
@@ -22,14 +25,11 @@
             "SilverStripe\\DocumentConverter\\Tests\\": "tests/"
         }
     },
-	"extra": {
+    "extra": {
         "expose": [
             "javascript"
-        ],
-		"branch-alias": {
-			"dev-master": "2.x-dev"
-		}
-	},
+        ]
+    },
     "minimum-stability": "dev",
     "prefer-stable": true
 }
