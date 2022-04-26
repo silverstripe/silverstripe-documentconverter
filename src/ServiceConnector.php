@@ -88,7 +88,7 @@ class ServiceConnector
             return $fromConfig;
         }
 
-        $fromEnv = Environment::getEnv('DOCVERT_' . strtoupper($detail));
+        $fromEnv = Environment::getEnv('DOCVERT_' . strtoupper($detail ?? ''));
         if ($fromEnv) {
             return $fromEnv;
         }
@@ -150,13 +150,13 @@ class ServiceConnector
         $folderName = ($chosenFolder) ? '/' . $chosenFolder->Name : '';
         $outname = tempnam(ASSETS_PATH, 'convert');
         $outzip = $outname . '.zip';
-        $out = fopen($outzip, 'w');
+        $out = fopen($outzip ?? '', 'w');
         curl_setopt($ch, CURLOPT_FILE, $out);
         $returnValue = curl_exec($ch);
         $status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         curl_close($ch);
         fclose($out);
-        chmod($outzip, 0666);
+        chmod($outzip ?? '', 0666);
 
         if (!$returnValue || ($status != 200)) {
             return ['error' => _t(
@@ -177,8 +177,8 @@ class ServiceConnector
         }
 
         // remove temporary files
-        unlink($outname);
-        unlink($outzip);
+        unlink($outname ?? '');
+        unlink($outzip ?? '');
 
         if (!file_exists(ASSETS_PATH . $folderName . '/index.html')) {
             return ['error' =>  _t(

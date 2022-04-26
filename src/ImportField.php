@@ -166,13 +166,13 @@ class ImportField extends UploadField
                 while ($node) {
                     if ($node instanceof DOMElement && $node->tagName == 'h1') {
                         $content .= '<li><a href="#h1.' . $h1 . '">' .
-                            trim(preg_replace('/\n|\r/', '', Convert::html2raw($node->textContent))) .
+                            trim(preg_replace('/\n|\r/', '', Convert::html2raw($node->textContent) ?? '') ?? '') .
                             '</a></li>';
                         $node->setAttributeNode(new DOMAttr("id", "h1.".$h1));
                         $h1++;
                     } elseif ($node instanceof DOMElement && $node->tagName == 'h2') {
                         $content .= '<li class="menu-h2"><a href="#h2.' . $h2 . '">' .
-                            trim(preg_replace('/\n|\r/', '', Convert::html2raw($node->textContent))) .
+                            trim(preg_replace('/\n|\r/', '', Convert::html2raw($node->textContent) ?? '') ?? '') .
                             '</a></li>';
                         $node->setAttributeNode(new DOMAttr("id", "h2.".$h2));
                         $h2++;
@@ -212,8 +212,8 @@ class ImportField extends UploadField
 
         // Get the text as html, remove the entry and exit root tags and return
         $text = $htmldoc->saveHTML();
-        $text = preg_replace('/^.*<body>/', '', $text);
-        $text = preg_replace('/<\/body>.*$/', '', $text);
+        $text = preg_replace('/^.*<body>/', '', $text ?? '');
+        $text = preg_replace('/<\/body>.*$/', '', $text ?? '');
 
         return $text;
     }
@@ -320,7 +320,7 @@ class ImportField extends UploadField
         for ($i = 0; $i < $imgs->length; $i++) {
             $img = $imgs->item($i);
             $originalPath = 'assets/' . $folderName . '/' . $img->getAttribute('src');
-            $name = FileNameFilter::create()->filter(basename($originalPath));
+            $name = FileNameFilter::create()->filter(basename($originalPath ?? ''));
 
             $image = Image::get()->filter([
                 'Name' => $name,
@@ -335,7 +335,7 @@ class ImportField extends UploadField
 
             // make sure it's put in place correctly so Image record knows where it is.
             // e.g. in the case of underscores being renamed to dashes.
-            @rename(Director::getAbsFile($originalPath), Director::getAbsFile($image->getFilename()));
+            @rename(Director::getAbsFile($originalPath) ?? '', Director::getAbsFile($image->getFilename()) ?? '');
 
             $img->setAttribute('src', $image->getFilename());
         }
@@ -465,7 +465,7 @@ class ImportField extends UploadField
 
                     $subdoc = new DOMDocument();
                     $subnode = $subdoc->createElement('body');
-                    $subtitle = trim(preg_replace('/\n|\r/', '', Convert::html2raw($node->textContent)));
+                    $subtitle = trim(preg_replace('/\n|\r/', '', Convert::html2raw($node->textContent) ?? '') ?? '');
                 } else {
                     $subnode->appendChild($subdoc->importNode($node, true));
                 }
