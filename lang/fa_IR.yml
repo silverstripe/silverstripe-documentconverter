@@ -1,6 +1,6 @@
 fa_IR:
   SilverStripe\DocumentConverter\PageExtension:
-    ImportTab: وارد کردن
+    ImportTab: 'وارد کردن'
   SilverStripe\DocumentConverter\SettingsField:
     ChooseFolder: 'یک پوشه برای ذخیره این فایل را انتخاب کنید'
   UploadField:
