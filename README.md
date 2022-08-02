@@ -1,23 +1,21 @@
-# SilverStripe Document Converter
+# Silverstripe Document Converter
 
 [![CI](https://github.com/silverstripe/silverstripe-documentconverter/actions/workflows/ci.yml/badge.svg)](https://github.com/silverstripe/silverstripe-documentconverter/actions/workflows/ci.yml)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/silverstripe/silverstripe-documentconverter/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/silverstripe/silverstripe-documentconverter/?branch=master)
-[![codecov](https://codecov.io/gh/silverstripe/silverstripe-documentconverter/branch/master/graph/badge.svg)](https://codecov.io/gh/silverstripe/silverstripe-documentconverter)
-[![SilverStripe supported module](https://img.shields.io/badge/silverstripe-supported-0071C4.svg)](https://www.silverstripe.org/software/addons/silverstripe-commercially-supported-module-list/)
+[![Silverstripe supported module](https://img.shields.io/badge/silverstripe-supported-0071C4.svg)](https://www.silverstripe.org/software/addons/silverstripe-commercially-supported-module-list/)
 
 ## Overview
 
-The module adds functionality to import OpenOffice-compatible files (doc, docx, etc) into SilverStripe pages and content.
+The module adds functionality to import OpenOffice-compatible files (doc, docx, etc) into Silverstripe pages and content.
 
 ## Requirements
 
- * SilverStripe CMS ^4
+ * Silverstripe CMS ^4
 
-**Note:** For a SilverStripe 3.x compatible version, please use [the 1.x release line](https://github.com/silverstripe/silverstripe-documentconverter/tree/1.0).
+**Note:** For a Silverstripe 3.x compatible version, please use [the 1.x release line](https://github.com/silverstripe/silverstripe-documentconverter/tree/1.0).
 
 ## Installation
 
-Install with [composer](https://getcomposer.org/) by running `composer require silverstripe/documentconverter` in the root of your SilverStripe project.
+Install with [composer](https://getcomposer.org/) by running `composer require silverstripe/documentconverter` in the root of your Silverstripe project.
 
 ## Configuration
 
