@@ -27,7 +27,7 @@
     },
     "extra": {
         "expose": [
-            "javascript"
+            "client/dist"
         ]
     },
     "minimum-stability": "dev",
