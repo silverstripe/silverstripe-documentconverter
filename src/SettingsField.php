@@ -40,7 +40,7 @@ class SettingsField extends CompositeField
         }
 
         // Add JS specific to this field.
-        Requirements::javascript('silverstripe/documentconverter: javascript/DocumentConversionField.js');
+        Requirements::javascript('silverstripe/documentconverter: client/dist/js/DocumentConversionField.js');
 
         $fields = FieldList::create([
             LiteralField::create(
