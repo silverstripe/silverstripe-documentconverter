@@ -16,3 +16,9 @@ mi:
     FROMCOMPUTERINFO: 'Tukuatu  i tō rorohiko'
     STARTALL: 'Tīmata katoa'
     STARTALLINFO: 'Tīmataria ngā tukuatu katoa'
+  DocumentImporterField:
+    ATTACHONCESAVED2: 'Ka taea te āpiti kōnae ina oti te tiaki tuatahi o te pūkete.'
+  SilverStripe\AssetAdmin\Forms\UploadField:
+    FIELDNOTSET: 'Kāore i kitea te mōhiohio kōnae'
+  SilverStripe\DocumentConverter\PageExtension:
+    ImportTab: Kawemai

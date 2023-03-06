@@ -12,3 +12,5 @@ fa_IR:
     FROMCOMPUTER: 'از کامپیوتر شما'
     FROMCOMPUTERINFO: 'بارگذاری از کامپیوتر شما'
     STARTALL: 'شروع همه'
+  SilverStripe\AssetAdmin\Forms\UploadField:
+    FIELDNOTSET: 'اطلاعات فایل پیدا نشد'

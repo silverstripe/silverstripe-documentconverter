@@ -1,0 +1,10 @@
+tr:
+  SilverStripe\AssetAdmin\Forms\UploadField:
+    FIELDNOTSET: 'Dosya bilgisi bulunamadı'
+  UploadField:
+    ATTACHFILE: 'Dosya ekle'
+    ATTACHFILES: 'Dosya ekle'
+    DROPFILE: 'dosyası kaldır'
+    DROPFILES: 'dosyaları kaldır'
+    FROMCOMPUTER: 'Kendi makinenizden'
+    STARTALL: 'Tümünü başlat'

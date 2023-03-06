@@ -1,0 +1,14 @@
+ja_JP:
+  SilverStripe\AssetAdmin\Forms\UploadField:
+    FIELDNOTSET: ファイル情報が見つかりませんでした
+  SilverStripe\DocumentConverter\PageExtension:
+    ImportTab: 取り込み
+  UploadField:
+    ATTACHFILE: ファイルを添付
+    ATTACHFILES: ファイルを添付
+    DROPFILE: ファイルをドロップ
+    DROPFILES: ファイルをドロップ
+    FROMCOMPUTER: コンピュータから
+    FROMCOMPUTERINFO: コンピュータからアップロード
+    STARTALL: すべて開始
+    STARTALLINFO: すべてのアップロードを開始

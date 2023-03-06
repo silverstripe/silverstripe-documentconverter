@@ -20,3 +20,7 @@ de:
     FROMCOMPUTERINFO: 'Von Ihrem Computer hochladen'
     STARTALL: 'Alle starten'
     STARTALLINFO: 'Alle Hochladevorgänge starten'
+  DocumentImporterField:
+    ATTACHONCESAVED2: 'Dateien können erst angehängt werden, wenn der Datensatz gespeichert wurde.'
+  SilverStripe\AssetAdmin\Forms\UploadField:
+    FIELDNOTSET: 'Dateiinformation nicht gefunden'

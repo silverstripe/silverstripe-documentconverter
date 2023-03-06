@@ -1,0 +1,16 @@
+es:
+  DocumentImporterField:
+    ATTACHONCESAVED2: 'Se pueden adjuntar archivos una vez se haya guardado el registro por primera vez.'
+  SilverStripe\AssetAdmin\Forms\UploadField:
+    FIELDNOTSET: 'No ha sido encontrada la información del archivo'
+  SilverStripe\DocumentConverter\PageExtension:
+    ImportTab: Importar
+  UploadField:
+    ATTACHFILE: 'Adjuntar un archivo'
+    ATTACHFILES: 'Adjuntar ficheros'
+    DROPFILE: 'Soltar un fichero'
+    DROPFILES: 'soltar archivos'
+    FROMCOMPUTER: 'Desde tu ordenador'
+    FROMCOMPUTERINFO: 'Subir desde su computadora'
+    STARTALL: 'Iniciar todos'
+    STARTALLINFO: 'Iniciar todas las subidas de archivos'
