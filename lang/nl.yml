@@ -1,0 +1,16 @@
+nl:
+  DocumentImporterField:
+    ATTACHONCESAVED2: 'Bestanden kunnen worden toegevoegd na het voor het eerst opslaan.'
+  SilverStripe\AssetAdmin\Forms\UploadField:
+    FIELDNOTSET: 'Bestandsinformatie niet gevonden'
+  SilverStripe\DocumentConverter\PageExtension:
+    ImportTab: Importeren
+  UploadField:
+    ATTACHFILE: 'Voeg een bestand toe'
+    ATTACHFILES: 'Voeg bestanden toe'
+    DROPFILE: 'sleep een bestand hierheen'
+    DROPFILES: 'sleep hier bestanden heen'
+    FROMCOMPUTER: 'Vanaf computer'
+    FROMCOMPUTERINFO: 'Uploaden vanaf uw computer'
+    STARTALL: 'Start alle'
+    STARTALLINFO: 'Start alle'

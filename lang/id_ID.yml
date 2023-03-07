@@ -1,0 +1,13 @@
+id_ID:
+  SilverStripe\AssetAdmin\Forms\UploadField:
+    FIELDNOTSET: 'Informasi berkas tidak ada'
+  SilverStripe\DocumentConverter\PageExtension:
+    ImportTab: Impor
+  UploadField:
+    ATTACHFILE: 'Lampirkan berkas'
+    ATTACHFILES: 'Lampirkan berkas'
+    DROPFILE: 'taruh berkas'
+    DROPFILES: 'taruh berkas'
+    FROMCOMPUTER: 'Dari komputer Anda'
+    FROMCOMPUTERINFO: 'Unggah dari komputer Anda'
+    STARTALL: 'Mulai semua'

@@ -1,0 +1,10 @@
+es_MX:
+  SilverStripe\AssetAdmin\Forms\UploadField:
+    FIELDNOTSET: 'Información acerca del archivo no encontrada'
+  UploadField:
+    ATTACHFILE: 'Adjuntar un archivo'
+    ATTACHFILES: 'Adjuntar archivos'
+    DROPFILE: 'Arrastrar un archivo'
+    DROPFILES: 'arrastrar archivo aquí'
+    FROMCOMPUTER: 'Desde tu computador'
+    STARTALL: 'Comenzar todas'

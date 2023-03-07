@@ -1,0 +1,10 @@
+pl_PL:
+  DocumentImporterField:
+    ATTACHONCESAVED2: 'Pliki mogą być załączone po pierwszym zapisaniu'
+  SilverStripe\AssetAdmin\Forms\UploadField:
+    FIELDNOTSET: 'Informacji o pliku nie znaleziono'
+  UploadField:
+    ATTACHFILE: 'Załącz plik'
+    DROPFILE: 'upuść plik'
+    FROMCOMPUTER: 'Z Twojego komputera'
+    FROMCOMPUTERINFO: 'Załaduj z Twojego komputera'

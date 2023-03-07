@@ -1,0 +1,13 @@
+lt:
+  SilverStripe\AssetAdmin\Forms\UploadField:
+    FIELDNOTSET: 'Informacija apie bylą nerasta'
+  SilverStripe\DocumentConverter\PageExtension:
+    ImportTab: Importas
+  UploadField:
+    ATTACHFILE: 'Prisegti bylą'
+    ATTACHFILES: 'Prisegti bylas'
+    DROPFILE: 'Įmesti bylą'
+    DROPFILES: 'Įmesti bylas'
+    FROMCOMPUTER: 'Iš jūsų kompiuterio'
+    FROMCOMPUTERINFO: 'Įkelti iš jūsų kompiuterio'
+    STARTALL: 'Pradėti viską'

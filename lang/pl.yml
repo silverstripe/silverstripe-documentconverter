@@ -1,0 +1,16 @@
+pl:
+  DocumentImporterField:
+    ATTACHONCESAVED2: 'Pliki mogą zostać dołączone dopiero po pierwszym zapisaniu rekordu.'
+  SilverStripe\AssetAdmin\Forms\UploadField:
+    FIELDNOTSET: 'Nie znaleziono informacji o pliku'
+  SilverStripe\DocumentConverter\PageExtension:
+    ImportTab: Import
+  UploadField:
+    ATTACHFILE: 'Załącz plik'
+    ATTACHFILES: 'Załącz pliki'
+    DROPFILE: 'upuść plik'
+    DROPFILES: 'upuść pliki'
+    FROMCOMPUTER: 'Z komputera'
+    FROMCOMPUTERINFO: 'Załaduj z twojego komputera'
+    STARTALL: 'Rozpocznij wszystko'
+    STARTALLINFO: 'Rozpocznij ładowanie wszystkich'

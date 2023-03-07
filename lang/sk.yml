@@ -1,0 +1,16 @@
+sk:
+  DocumentImporterField:
+    ATTACHONCESAVED2: 'Súbory je možné pripojiť až budete mať najprv uložený záznam.'
+  SilverStripe\AssetAdmin\Forms\UploadField:
+    FIELDNOTSET: 'Žiadna informácia o súbore'
+  SilverStripe\DocumentConverter\PageExtension:
+    ImportTab: Importovať
+  UploadField:
+    ATTACHFILE: 'Pripojiť súbor'
+    ATTACHFILES: 'Pripojiť súbory'
+    DROPFILE: 'pusť súbor'
+    DROPFILES: 'pusť súbory'
+    FROMCOMPUTER: 'Z vášho počitača'
+    FROMCOMPUTERINFO: 'Nahrat z vášho počítača'
+    STARTALL: 'Začni všetko'
+    STARTALLINFO: 'Začni všetko nahrávať'

@@ -1,0 +1,13 @@
+sl:
+  SilverStripe\AssetAdmin\Forms\UploadField:
+    FIELDNOTSET: 'Podatkov o datoteki nismo pridobili'
+  SilverStripe\DocumentConverter\PageExtension:
+    ImportTab: Uvozi
+  UploadField:
+    ATTACHFILE: 'Pripni datoteko'
+    ATTACHFILES: 'Pripni datoteke'
+    DROPFILE: 'Spusti datoteko'
+    DROPFILES: 'Spusti datoteko'
+    FROMCOMPUTER: 'Z vašega računalnika'
+    FROMCOMPUTERINFO: 'Prenos z računalnika'
+    STARTALL: 'Zaženi vse'

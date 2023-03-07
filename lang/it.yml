@@ -1,0 +1,16 @@
+it:
+  DocumentImporterField:
+    ATTACHONCESAVED2: 'I file possono essere allegati quando hai salvato per la prima volta.'
+  SilverStripe\AssetAdmin\Forms\UploadField:
+    FIELDNOTSET: 'Informazioni file non trovate'
+  SilverStripe\DocumentConverter\PageExtension:
+    ImportTab: Importa
+  UploadField:
+    ATTACHFILE: 'Allega un file'
+    ATTACHFILES: 'Allega file'
+    DROPFILE: 'trascina file'
+    DROPFILES: 'trascina file'
+    FROMCOMPUTER: 'Dal tuo computer'
+    FROMCOMPUTERINFO: 'Carica dal tuo conputer'
+    STARTALL: 'Avvia tutti'
+    STARTALLINFO: 'Avvia tutti i caricamenti'
