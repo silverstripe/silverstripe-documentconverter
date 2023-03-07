@@ -26,3 +26,7 @@ zh:
     FROMCOMPUTERINFO: 从您的电脑上传
     STARTALL: 启动全部
     STARTALLINFO: 启动全部上传
+  DocumentImporterField:
+    ATTACHONCESAVED2: 只要您第一次保存记录，文件就可以被附加。
+  SilverStripe\AssetAdmin\Forms\UploadField:
+    FIELDNOTSET: 没有找到文件信息

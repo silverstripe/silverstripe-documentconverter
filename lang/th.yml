@@ -1,0 +1,14 @@
+th:
+  SilverStripe\AssetAdmin\Forms\UploadField:
+    FIELDNOTSET: ไม่พบข้อมูลเกี่ยวกับไฟล์
+  SilverStripe\DocumentConverter\PageExtension:
+    ImportTab: นำเข้า
+  UploadField:
+    ATTACHFILE: แนบไฟล์
+    ATTACHFILES: แนบไฟล์
+    DROPFILE: ลบไฟล์
+    DROPFILES: ลบไฟล์
+    FROMCOMPUTER: จากคอมพิวเตอร์ของคุณ
+    FROMCOMPUTERINFO: อัพโหลดจากเครื่องคอมพิวเตอร์ของคุณ
+    STARTALL: เริ่มทั้งหมด
+    STARTALLINFO: เริ่มการอัพโหลดทั้งหมด

@@ -1,0 +1,5 @@
+ro:
+  UploadField:
+    ATTACHFILE: 'Atasati un fisier'
+    FROMCOMPUTER: 'De pe calculator'
+    FROMCOMPUTERINFO: 'Încărcați din calculator'

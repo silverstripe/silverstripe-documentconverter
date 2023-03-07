@@ -1,0 +1,10 @@
+hr:
+  SilverStripe\AssetAdmin\Forms\UploadField:
+    FIELDNOTSET: 'Nisu pronađeni podaci o datoteci'
+  SilverStripe\DocumentConverter\PageExtension:
+    ImportTab: Uvoz
+  UploadField:
+    ATTACHFILE: 'Dodaj datoteku'
+    ATTACHFILES: 'Dodaj datoteke'
+    FROMCOMPUTER: 'Sa računala'
+    FROMCOMPUTERINFO: 'Uploadajte sa svog računala'

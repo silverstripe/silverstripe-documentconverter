@@ -1,0 +1,16 @@
+et_EE:
+  DocumentImporterField:
+    ATTACHONCESAVED2: 'Faile saab manustada pärast seda, kui olete kirje salvestanud.'
+  SilverStripe\AssetAdmin\Forms\UploadField:
+    FIELDNOTSET: 'Failiteavet ei leitud'
+  SilverStripe\DocumentConverter\PageExtension:
+    ImportTab: Impordi
+  UploadField:
+    ATTACHFILE: 'Manusta fail'
+    ATTACHFILES: 'Manusta failid'
+    DROPFILE: 'pukseeri failid'
+    DROPFILES: 'pukseeri failid'
+    FROMCOMPUTER: 'Teie arvutist'
+    FROMCOMPUTERINFO: 'Laadige üles arvutist'
+    STARTALL: 'Alusta kõiki'
+    STARTALLINFO: 'Alusta kõiki üleslaadimisi'

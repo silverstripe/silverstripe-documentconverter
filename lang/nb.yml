@@ -1,0 +1,16 @@
+nb:
+  DocumentImporterField:
+    ATTACHONCESAVED2: 'Filer kan legges til så snart du har lagret oppføringen for første gang.'
+  SilverStripe\AssetAdmin\Forms\UploadField:
+    FIELDNOTSET: 'Filinformasjon ikke funnet'
+  SilverStripe\DocumentConverter\PageExtension:
+    ImportTab: Importer
+  UploadField:
+    ATTACHFILE: 'Legg ved en fil'
+    ATTACHFILES: 'Legg ved filer'
+    DROPFILE: 'Slipp en fil'
+    DROPFILES: 'Slipp filer'
+    FROMCOMPUTER: 'Fra din pc'
+    FROMCOMPUTERINFO: 'Last opp fra din pc'
+    STARTALL: 'Start alle'
+    STARTALLINFO: 'Start alle opplastinger'

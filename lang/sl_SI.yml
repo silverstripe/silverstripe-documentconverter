@@ -1,0 +1,9 @@
+sl_SI:
+  SilverStripe\AssetAdmin\Forms\UploadField:
+    FIELDNOTSET: 'Ni informacij o datoteki'
+  UploadField:
+    ATTACHFILE: 'Pripini datoteko'
+    ATTACHFILES: 'Pripni datoteke'
+    FROMCOMPUTER: 'Iz vašega računalnika'
+    FROMCOMPUTERINFO: 'Naložite datoteke iz računalnika'
+    STARTALL: 'Zaženi vse'

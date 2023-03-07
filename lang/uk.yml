@@ -1,0 +1,6 @@
+uk:
+  UploadField:
+    ATTACHFILE: 'Прикріпити файл'
+    ATTACHFILES: 'Прикріпити файли'
+    FROMCOMPUTER: 'З мого комп''ютера'
+    FROMCOMPUTERINFO: 'Завантажте з вашого комп’ютера'
