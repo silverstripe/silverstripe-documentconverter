@@ -1,0 +1,13 @@
+sr:
+  SilverStripe\AssetAdmin\Forms\UploadField:
+    FIELDNOTSET: 'Информације о датотеци нису пронађене'
+  SilverStripe\DocumentConverter\PageExtension:
+    ImportTab: Увези
+  UploadField:
+    ATTACHFILE: 'Прикључи датотеку'
+    ATTACHFILES: 'Прикључи датотеке'
+    DROPFILE: 'испусти датотеку'
+    DROPFILES: 'испусти датотеке'
+    FROMCOMPUTER: 'Са Вашег рачунара'
+    FROMCOMPUTERINFO: 'Постави са Вашег рачунара'
+    STARTALL: 'Започни све'

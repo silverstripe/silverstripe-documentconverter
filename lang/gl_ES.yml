@@ -1,0 +1,10 @@
+gl_ES:
+  SilverStripe\AssetAdmin\Forms\UploadField:
+    FIELDNOTSET: 'Ficheiro de información non atopado'
+  UploadField:
+    ATTACHFILE: 'Anexar un ficheiro'
+    ATTACHFILES: 'Anexar ficheiros'
+    DROPFILE: 'soltar un ficheiro'
+    DROPFILES: 'ficheiros soltados'
+    FROMCOMPUTER: 'Dende o teu Computador'
+    STARTALL: 'Comezar todo'

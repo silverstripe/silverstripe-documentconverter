@@ -1,0 +1,8 @@
+pt:
+  SilverStripe\AssetAdmin\Forms\UploadField:
+    FIELDNOTSET: 'Informação do ficheiro não encontrada'
+  UploadField:
+    ATTACHFILES: 'Adicionar ficheiros'
+    DROPFILE: 'arrastar um ficheiro'
+    FROMCOMPUTER: 'Do computador'
+    STARTALL: 'Iniciar todos'

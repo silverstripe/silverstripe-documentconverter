@@ -27,3 +27,7 @@ fi:
     FROMCOMPUTERINFO: 'Siirrä omalta tietokoneelta'
     STARTALL: 'Käynnistä kaikki'
     STARTALLINFO: 'Käynnistä kaikki siirrot'
+  DocumentImporterField:
+    ATTACHONCESAVED2: 'Tiedostot voidaan liittää heti, kun olet tallentanut tietueen ensimmäisen kerran.'
+  SilverStripe\AssetAdmin\Forms\UploadField:
+    FIELDNOTSET: 'Tiedostoinformaatiota ei löytynyt'

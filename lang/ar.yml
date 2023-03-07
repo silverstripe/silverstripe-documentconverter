@@ -26,3 +26,7 @@ ar:
     FROMCOMPUTERINFO: 'النطاق الأساسي'
     STARTALL: 'بدء تشغيل الجميع'
     STARTALLINFO: 'انطلاق كل التحميلات نحو الملقم'
+  DocumentImporterField:
+    ATTACHONCESAVED2: 'يمكن إرفاق الملفات عند حفظ السجل للمرة الأولى.'
+  SilverStripe\AssetAdmin\Forms\UploadField:
+    FIELDNOTSET: 'لا يوجد معلومات عن الملف'

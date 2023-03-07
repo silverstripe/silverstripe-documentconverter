@@ -1,0 +1,15 @@
+bg:
+  DocumentImporterField:
+    ATTACHONCESAVED2: 'Файлове могат да бъдат прикачвани след като записът се съхрани за първи път.'
+  SilverStripe\AssetAdmin\Forms\UploadField:
+    FIELDNOTSET: 'Информация за файла не беше намерена'
+  SilverStripe\DocumentConverter\PageExtension:
+    ImportTab: Внасяне
+  UploadField:
+    ATTACHFILE: 'Прикачване на файл'
+    ATTACHFILES: 'Прикачване на файлове'
+    DROPFILE: 'пуснете файл'
+    DROPFILES: 'пускане на файлове'
+    FROMCOMPUTER: 'От компютъра'
+    FROMCOMPUTERINFO: 'Качи от компютъра'
+    STARTALL: 'Старт на всички'

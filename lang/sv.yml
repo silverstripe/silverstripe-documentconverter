@@ -1,0 +1,16 @@
+sv:
+  DocumentImporterField:
+    ATTACHONCESAVED2: 'Filer kan läggas till efter att du sparat första gången.'
+  SilverStripe\AssetAdmin\Forms\UploadField:
+    FIELDNOTSET: 'Hittade ingen filinformation'
+  SilverStripe\DocumentConverter\PageExtension:
+    ImportTab: Importera
+  UploadField:
+    ATTACHFILE: 'Bifoga en fil'
+    ATTACHFILES: 'Bifoga fil(er)'
+    DROPFILE: 'Släpp en fil'
+    DROPFILES: 'släpp filer'
+    FROMCOMPUTER: 'Från din dator'
+    FROMCOMPUTERINFO: 'Ladda upp från din dator'
+    STARTALL: 'Starta alla'
+    STARTALLINFO: 'Starta all uppladdningar'

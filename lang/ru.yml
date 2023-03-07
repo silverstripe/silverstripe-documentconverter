@@ -27,3 +27,7 @@ ru:
     FROMCOMPUTERINFO: 'Загрузить с вашего компьютера'
     STARTALL: 'Начать все'
     STARTALLINFO: 'Начать все загрузки'
+  DocumentImporterField:
+    ATTACHONCESAVED2: 'Вы сможете прикрепитьфайлы после первого сохранения записи.'
+  SilverStripe\AssetAdmin\Forms\UploadField:
+    FIELDNOTSET: 'Информация о файле не найдена'

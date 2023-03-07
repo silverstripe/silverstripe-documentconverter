@@ -1,0 +1,16 @@
+af:
+  DocumentImporterField:
+    ATTACHONCESAVED2: 'Lêers kan aangeheg word wanneer jy die rekord vir die eerste keer gestoor het.'
+  SilverStripe\AssetAdmin\Forms\UploadField:
+    FIELDNOTSET: 'Die lêer informasie kan nie gevind word nie'
+  SilverStripe\DocumentConverter\PageExtension:
+    ImportTab: 'Voer in'
+  UploadField:
+    ATTACHFILE: 'Heg lêer aan'
+    ATTACHFILES: 'Heg lêer(s) aan'
+    DROPFILE: 'Laat val ''n lêer'
+    DROPFILES: 'Skuif lêers hiernatoe'
+    FROMCOMPUTER: 'Van jou rekenaar af'
+    FROMCOMPUTERINFO: 'Laai op van jou rekenaar af'
+    STARTALL: 'Begin alles'
+    STARTALLINFO: 'Begin op alles op te laai'

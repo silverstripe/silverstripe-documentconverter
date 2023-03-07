@@ -1,0 +1,16 @@
+fr:
+  DocumentImporterField:
+    ATTACHONCESAVED2: 'Des fichiers pourront être attachés après un premier enregistrement.'
+  SilverStripe\AssetAdmin\Forms\UploadField:
+    FIELDNOTSET: 'Information sur le fichier introuvable'
+  SilverStripe\DocumentConverter\PageExtension:
+    ImportTab: Importer
+  UploadField:
+    ATTACHFILE: 'Joindre un fichier'
+    ATTACHFILES: 'Joindre des fichiers'
+    DROPFILE: 'glissez-déposez un fichier'
+    DROPFILES: 'glissez-déposez des fichiers'
+    FROMCOMPUTER: 'Depuis votre ordinateur'
+    FROMCOMPUTERINFO: 'Télécharger depuis votre ordinateur'
+    STARTALL: 'Démarrer tout'
+    STARTALLINFO: 'Démarrer tous les téléchargements'

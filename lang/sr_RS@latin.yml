@@ -1,0 +1,15 @@
+sr_RS@latin:
+  DocumentImporterField:
+    ATTACHONCESAVED2: 'Datoteke mogu biti prikačene tek nakon što prvi put snimite zapis.'
+  SilverStripe\AssetAdmin\Forms\UploadField:
+    FIELDNOTSET: 'Informacije o datoteci nisu pronađene'
+  SilverStripe\DocumentConverter\PageExtension:
+    ImportTab: Uvezi
+  UploadField:
+    ATTACHFILE: 'Priključi datoteku'
+    ATTACHFILES: 'Priključi datoteke'
+    DROPFILE: 'ispusti datoteku'
+    DROPFILES: 'ispusti datoteke'
+    FROMCOMPUTER: 'Sa Vašeg računara'
+    FROMCOMPUTERINFO: 'Postavi sa Vašeg računara'
+    STARTALL: 'Započni sve'
