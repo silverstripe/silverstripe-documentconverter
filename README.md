@@ -7,15 +7,11 @@
 
 The module adds functionality to import OpenOffice-compatible files (doc, docx, etc) into Silverstripe pages and content.
 
-## Requirements
-
- * Silverstripe CMS ^4
-
-**Note:** For a Silverstripe 3.x compatible version, please use [the 1.x release line](https://github.com/silverstripe/silverstripe-documentconverter/tree/1.0).
-
 ## Installation
 
-Install with [composer](https://getcomposer.org/) by running `composer require silverstripe/documentconverter` in the root of your Silverstripe project.
+```sh
+composer require silverstripe/documentconverter
+```
 
 ## Configuration
 
