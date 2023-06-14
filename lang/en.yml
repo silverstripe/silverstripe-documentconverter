@@ -5,6 +5,7 @@ en:
     FIELDNOTSET: 'File information not found'
   SilverStripe\DocumentConverter\PageExtension:
     ImportTab: Import
+    has_one_ImportedFromFile: 'Imported from file'
   SilverStripe\DocumentConverter\ServiceConnector:
     PROCESSFAILED: 'Could not process document, please double-check you uploaded a .doc or .docx format.'
     SERVERUNREACHABLE: 'Could not contact document conversion server. Please try again later or contact your system administrator.'
