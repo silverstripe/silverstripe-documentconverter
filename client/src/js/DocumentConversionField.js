@@ -5,10 +5,10 @@ jQuery.entwine('documentimport', ($) => {
      * Trigger page reload after the document has been imported.
      */
     onfileuploaddone(e, data) {
-      const responseText = data.jqXHR.responseText;
+      const { responseText } = data.jqXHR;
       const responseJSON = JSON.parse(responseText);
 
-      const error = responseJSON[0].error;
+      const { error } = responseJSON[0];
 
       if (!error) {
         // Update the tree - LeftAndMain.Tree/updateNodesFromServer doesn't handle children being added or removed
@@ -27,7 +27,7 @@ jQuery.entwine('documentimport', ($) => {
     onfileuploadsubmit(e, data) {
       const form = this.closest('form');
       const field = this.closest('.documentimport');
-
+      // eslint-disable-next-line no-param-reassign
       data.formData = $.extend(data.formData, {
         // Re-add the original fields (this call unfortunately overrides the orignal formData option).
         SecurityID: form.find(':input[name=SecurityID]').val(),
@@ -37,9 +37,8 @@ jQuery.entwine('documentimport', ($) => {
         KeepSource: field.find('[name="DocumentImportField-KeepSource"]').prop('checked') ? 1 : 0,
         ChosenFolderID: field.find('[name=DocumentImportField-ChosenFolderID]').val(),
         PublishPages: field.find('[name="DocumentImportField-PublishPages"]').prop('checked') ? 1 : 0,
-        IncludeTOC: field.find('[name="DocumentImportField-IncludeTOC"]').prop('checked') ? 1 : 0
+        IncludeTOC: field.find('[name="DocumentImportField-IncludeTOC"]').prop('checked') ? 1 : 0,
       });
-    }
+    },
   });
 });
-
