@@ -42,4 +42,3 @@ jQuery.entwine('documentimport', ($) => {
     }
   });
 });
-
