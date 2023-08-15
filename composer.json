@@ -16,7 +16,7 @@
         "ext-curl": "*",
         "ext-tidy": "*",
         "ext-zip": "*",
-        "phpunit/phpunit": "^9.5",
+        "phpunit/phpunit": "^9.6",
         "squizlabs/php_codesniffer": "^3"
     },
     "autoload": {
