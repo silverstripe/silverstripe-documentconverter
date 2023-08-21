@@ -1,9 +1,15 @@
 ru:
+  DocumentImporterField:
+    ATTACHONCESAVED2: 'Вы сможете прикрепитьфайлы после первого сохранения записи.'
+  SilverStripe\AssetAdmin\Forms\UploadField:
+    FIELDNOTSET: 'Информация о файле не найдена'
+  SilverStripe\DocumentConverter\ImportField:
+    ATTACHONCESAVED2: 'Вы сможете прикрепитьфайлы после первого сохранения записи.'
+  SilverStripe\DocumentConverter\PageExtension:
+    ImportTab: Импорт
   SilverStripe\DocumentConverter\ServiceConnector:
     PROCESSFAILED: 'Не могу обработать документ, пожалуйста проверьте что документ загружен в формате .doc или .docx.'
     SERVERUNREACHABLE: 'Не могу подключиться к серверу конвертации документов. Пожалуйста попробуйте позднее или свяжитесь с вашим системным администратором.'
-  SilverStripe\DocumentConverter\PageExtension:
-    ImportTab: Импорт
   SilverStripe\DocumentConverter\SettingsField:
     ChooseFolder: 'Выберите папку для сохранения файла'
     EachH1: 'для каждого заголовка 1'
@@ -15,8 +21,6 @@ ru:
     'No': нет
     SplitHeader: 'Разделить документ на страницы'
     publishPages: 'Опубликовать модифицированные страницы (не рекомендуется если вы не уверены в последствиях)'
-  SilverStripe\DocumentConverter\ImportField:
-    ATTACHONCESAVED2: 'Вы сможете прикрепитьфайлы после первого сохранения записи.'
   UploadField:
     ATTACHFILE: 'Прикрепить файл'
     ATTACHFILES: 'Прикрепить файлы'
@@ -27,7 +31,3 @@ ru:
     FROMCOMPUTERINFO: 'Загрузить с вашего компьютера'
     STARTALL: 'Начать все'
     STARTALLINFO: 'Начать все загрузки'
-  DocumentImporterField:
-    ATTACHONCESAVED2: 'Вы сможете прикрепитьфайлы после первого сохранения записи.'
-  SilverStripe\AssetAdmin\Forms\UploadField:
-    FIELDNOTSET: 'Информация о файле не найдена'

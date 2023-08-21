@@ -1,9 +1,15 @@
 ar:
+  DocumentImporterField:
+    ATTACHONCESAVED2: 'يمكن إرفاق الملفات عند حفظ السجل للمرة الأولى.'
+  SilverStripe\AssetAdmin\Forms\UploadField:
+    FIELDNOTSET: 'لا يوجد معلومات عن الملف'
+  SilverStripe\DocumentConverter\ImportField:
+    ATTACHONCESAVED2: 'يمكن إرفاق الملفات عند حفظ السجل للمرة الأولى.'
+  SilverStripe\DocumentConverter\PageExtension:
+    ImportTab: استيراد
   SilverStripe\DocumentConverter\ServiceConnector:
     PROCESSFAILED: 'لم يتم التمكن من معالجة الوثيقة, من فضلك قم بمراجعة أنك قمت برفع الملف بصيغة .دى أو سى أو صيغة .دى أو سى إكس.'
     SERVERUNREACHABLE: 'لم يتم التواصل مع سيرفر تحويل الوثائق. من فضلك حاول مرة أخرى لاحقا أو اتصل بمشرف النظام الخاص بك.'
-  SilverStripe\DocumentConverter\PageExtension:
-    ImportTab: استيراد
   SilverStripe\DocumentConverter\SettingsField:
     ChooseFolder: 'اختر مجلد لحفظ هذا الملف'
     EachH1: 'لكل عنوان واحد'
@@ -14,8 +20,6 @@ ar:
     KeepSource: 'احتفظ بالملف الأصلي. وقم بإضافة رابط له في جدول المحتويات، إذا أمكن ذلك.'
     SplitHeader: 'تقسيم المستند إلى صفحات'
     publishPages: 'نشر الصفحات المُعدلة (لا يُوصى به إلا إذا كنت متأكد من ناتج التحويل)'
-  SilverStripe\DocumentConverter\ImportField:
-    ATTACHONCESAVED2: 'يمكن إرفاق الملفات عند حفظ السجل للمرة الأولى.'
   UploadField:
     ATTACHFILE: 'إرفاق ملف'
     ATTACHFILES: 'إرفاق ملفات'
@@ -26,7 +30,3 @@ ar:
     FROMCOMPUTERINFO: 'النطاق الأساسي'
     STARTALL: 'بدء تشغيل الجميع'
     STARTALLINFO: 'انطلاق كل التحميلات نحو الملقم'
-  DocumentImporterField:
-    ATTACHONCESAVED2: 'يمكن إرفاق الملفات عند حفظ السجل للمرة الأولى.'
-  SilverStripe\AssetAdmin\Forms\UploadField:
-    FIELDNOTSET: 'لا يوجد معلومات عن الملف'
