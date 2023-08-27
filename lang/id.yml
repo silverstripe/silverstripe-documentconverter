@@ -1,16 +1,16 @@
 id:
+  SilverStripe\AssetAdmin\Forms\UploadField:
+    FIELDNOTSET: 'Informasi berkas tidak ada'
   SilverStripe\DocumentConverter\PageExtension:
     ImportTab: Impor
   SilverStripe\DocumentConverter\SettingsField:
     ChooseFolder: 'Pilih sebuah map untuk menyimpan berkas ini'
   UploadField:
-    FROMCOMPUTER: 'Dari komputermu'
-    FROMCOMPUTERINFO: 'Ungah dari komputermu'
-    STARTALL: 'Mulai semua'
-    STARTALLINFO: 'Mulai semua unggahan'
     ATTACHFILE: 'Lampirkan berkas'
     ATTACHFILES: 'Lampirkan berkas'
     DROPFILE: 'taruh berkas'
     DROPFILES: 'taruh berkas'
-  SilverStripe\AssetAdmin\Forms\UploadField:
-    FIELDNOTSET: 'Informasi berkas tidak ada'
+    FROMCOMPUTER: 'Dari komputermu'
+    FROMCOMPUTERINFO: 'Ungah dari komputermu'
+    STARTALL: 'Mulai semua'
+    STARTALLINFO: 'Mulai semua unggahan'
