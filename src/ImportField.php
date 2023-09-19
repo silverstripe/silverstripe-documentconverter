@@ -13,7 +13,7 @@ use SilverStripe\Assets\FileNameFilter;
 use SilverStripe\Assets\Folder;
 use SilverStripe\Assets\Image;
 use SilverStripe\Assets\Upload;
-use SilverStripe\Core\Config\Config;
+use SilverStripe\Control\Controller;
 use SilverStripe\Core\Convert;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Control\Director;
@@ -25,6 +25,7 @@ use SilverStripe\ORM\DataObject;
 use SilverStripe\Versioned\Versioned;
 use SilverStripe\View\Parsers\HTMLValue;
 use Tidy;
+use SilverStripe\AssetAdmin\Controller\AssetAdmin;
 
 /**
  * DocumentImporterField is built on top of UploadField to access a document
@@ -58,10 +59,12 @@ class ImportField extends UploadField
 
     private static $importer_class = ServiceConnector::class;
 
+    protected $attachEnabled = false;
+
     /**
      * Process the document immediately upon upload.
      */
-    public function upload(HTTPRequest $request)
+    public function Xupload(HTTPRequest $request)
     {
         if ($this->isDisabled() || $this->isReadonly()) {
             return $this->httpError(403);
@@ -94,11 +97,12 @@ class ImportField extends UploadField
 
         if (!$return['error']) {
             // Get options for this import.
-            $splitHeader = (int)$request->postVar('SplitHeader');
-            $keepSource = (bool)$request->postVar('KeepSource');
-            $chosenFolderID = (int)$request->postVar('ChosenFolderID');
-            $publishPages = (bool)$request->postVar('PublishPages');
-            $includeTOC = (bool)$request->postVar('IncludeTOC');
+            $splitHeader = (int) $request->postVar('SplitHeader');
+            $keepSource = (bool) $request->postVar('KeepSource');
+            $chosenFolderID = (int) $request->postVar('ChosenFolderID');
+            $publishPages = (bool) $request->postVar('PublishPages');
+            $includeTOC = (bool) $request->postVar('IncludeTOC');
+            // ^^^ These do nothing, they're aren't sent on upload
 
             // Process the document and write the page.
             $preservedDocument = null;
@@ -111,6 +115,31 @@ class ImportField extends UploadField
                 $return['error'] = $importResult['error'];
             } elseif ($includeTOC) {
                 $this->writeTOC($publishPages, $keepSource ? $preservedDocument : null);
+            }
+        }
+
+        if (($return['error'] ?? 1) == 0) {
+            // asset-admin UploadField.js considers any error including 0 to be an error
+            // so simply unset the key if there is no error
+            unset($return['error']);
+        }
+
+        // generate the same result as UploadField
+        // note we don't need to do this if there is an actual error because the JSON that's
+        // returned is good enough to display an error message
+        if (!isset($return['error'])) {
+            if ($preservedDocument) {
+                $file = $preservedDocument;
+            } else {
+                // create a temporary File object to return to the client
+                $upload = Upload::create();
+                $file = File::create();
+                $upload->loadIntoFile($tmpfile, $file, $chosenFolderID);
+            }
+            $result = AssetAdmin::singleton()->getObjectFromData($file);
+            $return = array_merge($result, $return);
+            if (!$keepSource) {
+                // $file->delete();
             }
         }
 
@@ -277,7 +306,6 @@ class ImportField extends UploadField
      */
     public function importFromPOST($tmpFile, $splitHeader = false, $publishPages = false, $chosenFolderID = null)
     {
-
         $fileDescriptor = [
             'name' => $tmpFile['name'],
             'path' => $tmpFile['tmp_name'],
@@ -286,6 +314,7 @@ class ImportField extends UploadField
 
         $sourcePage = $this->form->getRecord();
         $importerClass = $this->config()->get('importer_class');
+        /** @var Importer $importer */
         $importer = Injector::inst()->create($importerClass, $fileDescriptor, $chosenFolderID);
         $content = $importer->import();
 
@@ -316,27 +345,39 @@ class ImportField extends UploadField
         // make sure any images are added as Image records with a relative link to assets
         $chosenFolder = ($this->chosenFolderID) ? DataObject::get_by_id(Folder::class, $this->chosenFolderID) : null;
         $folderName = ($chosenFolder) ? '/' . $chosenFolder->Name : '';
+        $dir = Controller::join_links(ASSETS_DIR, $folderName);
         $imgs = $xpath->query('//img');
         for ($i = 0; $i < $imgs->length; $i++) {
             $img = $imgs->item($i);
-            $originalPath = 'assets/' . $folderName . '/' . $img->getAttribute('src');
+            $originalPath = Controller::join_links($dir, $img->getAttribute('src'));
+            // ignore base64 encoded images which show up when importing using PHPOffice/PHPWord Word2007
+            // counter-intuitively it seems that we can simply ignore these and images
+            // are still imported correctly
+            if (preg_match("#data:image/.+?;base64,#", $originalPath)) {
+                continue;
+            }
+            // base64 inline image - note intentionally not starting regex ^ as it may start with ASSETS_DIR
+            // if (preg_match("#data:image/(.+?);base64,(.+)$#", $originalPath, $matches)) {
+            //     $ext = $matches[1];
+            //     $contents = $matches[2];
+            //     $filepath = tempnam($dir, 'image') . '.' . $ext;
+            //     file_put_contents($filepath, $contents);
+            //     $originalPath = $filepath;
+            // }
             $name = FileNameFilter::create()->filter(basename($originalPath ?? ''));
-
             $image = Image::get()->filter([
                 'Name' => $name,
-                'ParentID' => (int)$chosenFolderID
+                'ParentID' => (int) $chosenFolderID
             ])->first();
             if (!($image && $image->exists())) {
                 $image = Image::create();
-                $image->ParentID = (int)$chosenFolderID;
+                $image->ParentID = (int) $chosenFolderID;
                 $image->Name = $name;
                 $image->write();
             }
-
             // make sure it's put in place correctly so Image record knows where it is.
             // e.g. in the case of underscores being renamed to dashes.
             @rename(Director::getAbsFile($originalPath) ?? '', Director::getAbsFile($image->getFilename()) ?? '');
-
             $img->setAttribute('src', $image->getFilename());
         }
 

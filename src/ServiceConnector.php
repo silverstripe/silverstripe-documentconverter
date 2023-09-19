@@ -11,6 +11,8 @@ use SilverStripe\ORM\DataObject;
 use ZipArchive;
 
 /**
+ * This class uses the legacy docvert service
+ *
  * Utility class hiding the specifics of the document conversion process.
  */
 class ServiceConnector

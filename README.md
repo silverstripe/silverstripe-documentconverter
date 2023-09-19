@@ -19,12 +19,29 @@ Install with [composer](https://getcomposer.org/) by running `composer require s
 
 ## Configuration
 
-You will need to set the following three environment variables:
+**Note:** Using of of docvert is primarily designed for Common Web Platform (CWP) clients
+
+If you are using docver then you will need to set the following three environment variables:
 - `DOCVERT_USERNAME`
 - `DOCVERT_PASSWORD`
 - `DOCVERT_URL`
 
-**Note:** This module is primarily designed for Common Web Platform (CWP) clients. There will be additional setup required to use this module as intended, if you are not using the CWP government edition.
+If do not have the cwp/cwp-core module installed then enable document converter with the following configuration - note will be automatically applied if you also have the cwp/cwp-core module installed and the `DOCVERT_USERNAME` environment variable set.
+
+```yaml
+Page:
+  extensions:
+    - SilverStripe\DocumentConverter\PageExtension
+```
+
+By default this module will use docvert, though it's highly recommend you instead use the phpoffice/phpword module instead. Enable this with the following configuration:
+
+```yaml
+SilverStripe\DocumentConverter\ImportField:
+  importer_class: SilverStripe\DocumentConverter\PHPWordImporter
+```
+
+docvert support is now deprecated and will be removed in the next major version
 
 ## User Guide
 
