@@ -1,0 +1,8 @@
+---
+Name: documentconverter
+Only:
+  classexists: Page
+---
+Page:
+  extensions:
+    - SilverStripe\DocumentConverter\PageExtension

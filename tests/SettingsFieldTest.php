@@ -27,16 +27,6 @@ class SettingsFieldTest extends SapphireTest
         new SettingsField(['i', 'don\'t', 'like', 'kids']);
     }
 
-    public function testFieldAddsJavascriptRequirements()
-    {
-        // Start with a clean slate (no global state interference)
-        Requirements::backend()->clear();
-
-        new SettingsField();
-        $javascript = Requirements::backend()->getJavascript();
-        $this->assertNotEmpty($javascript);
-    }
-
     public function testFieldListGeneration()
     {
         $importField = new SettingsField();
@@ -51,21 +41,5 @@ class SettingsFieldTest extends SapphireTest
 
         // Check the getter works
         $this->assertSame($innerField, $importField->getInnerField());
-
-        // Check the fields have been given has the change tracker disabled
-        $settingsFields = [
-            'SplitHeader' => DropdownField::class,
-            'KeepSource' => CheckboxField::class,
-            'ChosenFolderID' => TreeDropdownField::class,
-            'IncludeTOC' => CheckboxField::class,
-            'PublishPages' => CheckboxField::class
-        ];
-        foreach ($settingsFields as $fieldName => $className) {
-            $field = $fields->fieldByName(
-                'DocumentConversionSettings-' . $fieldName
-            );
-            $this->assertInstanceOf($className, $field);
-            $this->assertStringContainsString('no-change-track', $field->extraClass());
-        }
     }
 }

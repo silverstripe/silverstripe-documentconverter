@@ -14,6 +14,7 @@ en:
     EachH1: 'for each heading 1'
     EachH2: 'for each heading 2'
     FileWarningHeader: 'Warning: import will remove all content and subpages of this page.'
+    DoNoSaveWarning: 'Note: Only .docx files are supported.<br><br>Warning: Page content will be updated as soon as you select a file.<br><br>Do not click the Save or Publish buttons as this will revert the uploaded content.'
     ImportedFromFile: 'Import content from a word document'
     IncludeTOC: 'Replace this page with a Table of Contents.'
     KeepSource: 'Keep the original document. Adds a link to it on TOC, if enabled.'

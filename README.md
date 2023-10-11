@@ -5,7 +5,7 @@
 
 ## Overview
 
-The module adds functionality to import OpenOffice-compatible files (doc, docx, etc) into Silverstripe pages and content.
+The module adds functionality to import .docx files into Silverstripe pages and content.
 
 ## Installation
 
@@ -15,12 +15,35 @@ composer require silverstripe/documentconverter
 
 ## Configuration
 
-You will need to set the following three environment variables:
+### PHPOffice/PHPWord
+
+By default this project will use the [PHPOffice/PHPWord](https://github.com/PHPOffice/PHPWord) library to convert uploaded word documents.
+
+### docvert
+
+**Note:** Using of of [docvert](https://github.com/holloway/docvert) to convert uploaded word documents was primarily designed for Common Web Platform (CWP) clients. It is no longer recommended to use docvert.
+
+docvert support is deprecated and will be removed in the next major version
+
+If you wish to use docvert instead of PHPOffice/PHPWord, then add the following configuration to your project:
+
+```yaml
+SilverStripe\DocumentConverter\ImportField:
+  importer_class: SilverStripe\DocumentConverter\ServiceConnector
+```
+
+If you are using docver then you will need to set the following three environment variables:
 - `DOCVERT_USERNAME`
 - `DOCVERT_PASSWORD`
 - `DOCVERT_URL`
 
-**Note:** This module is primarily designed for Common Web Platform (CWP) clients. There will be additional setup required to use this module as intended, if you are not using the CWP government edition.
+If do not have the cwp/cwp-core module installed then enable docvert with the following configuration - note will be automatically applied if you also have the cwp/cwp-core module installed and the `DOCVERT_USERNAME` environment variable set.
+
+```yaml
+Page:
+  extensions:
+    - SilverStripe\DocumentConverter\PageExtension
+```
 
 ## User Guide
 

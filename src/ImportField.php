@@ -2,7 +2,6 @@
 
 namespace SilverStripe\DocumentConverter;
 
-use DOMAttr;
 use DOMDocument;
 use DOMElement;
 use DOMXPath;
@@ -10,10 +9,9 @@ use Page;
 use SilverStripe\AssetAdmin\Forms\UploadField;
 use SilverStripe\Assets\File;
 use SilverStripe\Assets\FileNameFilter;
-use SilverStripe\Assets\Folder;
 use SilverStripe\Assets\Image;
 use SilverStripe\Assets\Upload;
-use SilverStripe\Core\Config\Config;
+use SilverStripe\Control\Controller;
 use SilverStripe\Core\Convert;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Control\Director;
@@ -25,38 +23,24 @@ use SilverStripe\ORM\DataObject;
 use SilverStripe\Versioned\Versioned;
 use SilverStripe\View\Parsers\HTMLValue;
 use Tidy;
+use SilverStripe\AssetAdmin\Controller\AssetAdmin;
+use SilverStripe\DocumentConverter\PHPWordImporter;
+use SilverStripe\Dev\Deprecation;
 
 /**
  * DocumentImporterField is built on top of UploadField to access a document
  * conversion capabilities. The original field is stripped down to allow only
  * uploads from the user's computer, and triggers the conversion when the upload
  * is completed.
- *
- * The file upload has additional parameters injected. They are set by the user
- * through the fields provided on the DocumentImportField:
- *
- * * SplitHeader: if enabled, scans the document looking for H1 or H2 headers and
- *   puts each subsection into separate page. The first part of the document until
- *   the first header occurence is added to the current page.
- * * KeepSource: prevents the removal of the uploaded document, and stores its ID
- *   in the has_one relationship on the parent page (see the
- *   DocumentImportField::__construct for how to configure the name of this has_one)
- * * ChosenFolderID: directory to be used for storing the original document and the
- *   image files that come along with the document.
- * * PublishPages: whether the current and the chapter pages should be published.
- * * IncludeTOC: builds a table of contents and puts it into the parent page. This
- *   could potentially replace the document content from before the first heading.
- *   Also, if the KeepSource is enabled, it will inject the document link into this
- *   page.
- *
- *  Caveat: there is some coupling between the above parameters.
  */
 class ImportField extends UploadField
 {
 
     private static $allowed_actions = ['upload'];
 
-    private static $importer_class = ServiceConnector::class;
+    private static $importer_class = PHPWordImporter::class;
+
+    protected $attachEnabled = false;
 
     /**
      * Process the document immediately upon upload.
@@ -93,25 +77,30 @@ class ImportField extends UploadField
         }
 
         if (!$return['error']) {
-            // Get options for this import.
-            $splitHeader = (int)$request->postVar('SplitHeader');
-            $keepSource = (bool)$request->postVar('KeepSource');
-            $chosenFolderID = (int)$request->postVar('ChosenFolderID');
-            $publishPages = (bool)$request->postVar('PublishPages');
-            $includeTOC = (bool)$request->postVar('IncludeTOC');
-
             // Process the document and write the page.
-            $preservedDocument = null;
-            if ($keepSource) {
-                $preservedDocument = $this->preserveSourceDocument($tmpfile, $chosenFolderID);
-            }
-
-            $importResult = $this->importFromPOST($tmpfile, $splitHeader, $publishPages, $chosenFolderID);
+            $importResult = $this->importFromPOST($tmpfile);
             if (is_array($importResult) && isset($importResult['error'])) {
                 $return['error'] = $importResult['error'];
-            } elseif ($includeTOC) {
-                $this->writeTOC($publishPages, $keepSource ? $preservedDocument : null);
             }
+        }
+
+        if (($return['error'] ?? 1) == 0) {
+            // asset-admin UploadField.js considers any error including 0 to be an error
+            // so simply unset the key if there is no error
+            unset($return['error']);
+        }
+
+        // generate the same result as UploadField
+        // note we don't need to do this if there is an actual error because the JSON that's
+        // returned is good enough to display an error message
+        if (!isset($return['error'])) {
+            // create a temporary File object to return to the client
+            $upload = Upload::create();
+            $file = File::create();
+            $upload->loadIntoFile($tmpfile, $file);
+            $objectData = AssetAdmin::singleton()->getObjectFromData($file);
+            $return = array_merge($objectData, $return);
+            $file->delete();
         }
 
         $response = HTTPResponse::create(json_encode([$return]));
@@ -125,19 +114,12 @@ class ImportField extends UploadField
      * @param $tmpfile Temporary file data structure.
      * @param int $chosenFolderID Target folder.
      * @return File Stored file.
+     *
+     * @deprecated 3.2.0 Will be removed without equivalent functionality to replace it.
      */
     protected function preserveSourceDocument($tmpfile, $chosenFolderID = null)
     {
-        $upload = Upload::create();
-
-        $file = File::create();
-        $upload->loadIntoFile($tmpfile, $file, $chosenFolderID);
-
-        $page = $this->form->getRecord();
-        $page->ImportedFromFileID = $file->ID;
-        $page->write();
-
-        return $file;
+        Deprecation::notice('3.2.0', 'Will be removed without equivalent functionality to replace it.');
     }
 
     /**
@@ -145,75 +127,28 @@ class ImportField extends UploadField
      *
      * @param bool $publishPage Should the parent page be published.
      * @param File $preservedDocument Set if the link to the original document should be added.
+     *
+     * @deprecated 3.2.0 Will be removed without equivalent functionality to replace it.
      */
     protected function writeTOC($publishPages = false, $preservedDocument = null)
     {
-        $page = $this->form->getRecord();
-        $content = '<ul>';
-
-        if ($page) {
-            if ($page->Children()->Count() > 0) {
-                foreach ($page->Children() as $child) {
-                    $content .= '<li><a href="' . $child->Link() . '">' . $child->Title . '</a></li>';
-                }
-                $page->Content = $content . '</ul>';
-            } else {
-                $doc = new DOMDocument();
-                $doc->loadHTML($page->Content);
-                $body = $doc->getElementsByTagName('body')->item(0);
-                $node = $body->firstChild;
-                $h1 = $h2 = 1;
-                while ($node) {
-                    if ($node instanceof DOMElement && $node->tagName == 'h1') {
-                        $content .= '<li><a href="#h1.' . $h1 . '">' .
-                            trim(preg_replace('/\n|\r/', '', Convert::html2raw($node->textContent) ?? '') ?? '') .
-                            '</a></li>';
-                        $node->setAttributeNode(new DOMAttr("id", "h1.".$h1));
-                        $h1++;
-                    } elseif ($node instanceof DOMElement && $node->tagName == 'h2') {
-                        $content .= '<li class="menu-h2"><a href="#h2.' . $h2 . '">' .
-                            trim(preg_replace('/\n|\r/', '', Convert::html2raw($node->textContent) ?? '') ?? '') .
-                            '</a></li>';
-                        $node->setAttributeNode(new DOMAttr("id", "h2.".$h2));
-                        $h2++;
-                    }
-                    $node = $node->nextSibling;
-                }
-                $page->Content = $content . '</ul>' . $doc->saveHTML();
-            }
-
-            // Add in the link to the original document, if provided.
-            if ($preservedDocument) {
-                $page->Content = '<a href="' .
-                    $preservedDocument->Link() .
-                    '" title="download original document">download original document (' .
-                    $preservedDocument->getSize() .
-                    ')</a>' .
-                    $page->Content;
-            }
-
-            // Store the result
-            $page->write();
-            if ($publishPages) {
-                $page->publishRecursive();
-            }
-        }
+        Deprecation::notice('3.2.0', 'Will be removed without equivalent functionality to replace it.');
     }
 
     protected function getBodyText($doc, $node)
     {
-        // Build a new doc
-        $htmldoc = new DOMDocument();
-        // Create the html element
-        $html = $htmldoc->createElement('html');
-        $htmldoc->appendChild($html);
-        // Append the body node
-        $html->appendChild($htmldoc->importNode($node, true));
+         // Build a new doc
+         $htmldoc = new DOMDocument();
+         // Create the html element
+         $html = $htmldoc->createElement('html');
+         $htmldoc->appendChild($html);
+         // Append the body node
+         $html->appendChild($htmldoc->importNode($node, true));
 
-        // Get the text as html, remove the entry and exit root tags and return
-        $text = $htmldoc->saveHTML();
-        $text = preg_replace('/^.*<body>/', '', $text ?? '');
-        $text = preg_replace('/<\/body>.*$/', '', $text ?? '');
+         // Get the text as html, remove the entry and exit root tags and return
+         $text = $htmldoc->saveHTML();
+         $text = preg_replace('/^.*<body>/', '', $text ?? '');
+         $text = preg_replace('/<\/body>.*$/', '', $text ?? '');
 
         return $text;
     }
@@ -277,7 +212,6 @@ class ImportField extends UploadField
      */
     public function importFromPOST($tmpFile, $splitHeader = false, $publishPages = false, $chosenFolderID = null)
     {
-
         $fileDescriptor = [
             'name' => $tmpFile['name'],
             'path' => $tmpFile['tmp_name'],
@@ -286,6 +220,7 @@ class ImportField extends UploadField
 
         $sourcePage = $this->form->getRecord();
         $importerClass = $this->config()->get('importer_class');
+        /** @var Importer $importer */
         $importer = Injector::inst()->create($importerClass, $fileDescriptor, $chosenFolderID);
         $content = $importer->import();
 
@@ -314,29 +249,30 @@ class ImportField extends UploadField
         $xpath = new DOMXPath($doc);
 
         // make sure any images are added as Image records with a relative link to assets
-        $chosenFolder = ($this->chosenFolderID) ? DataObject::get_by_id(Folder::class, $this->chosenFolderID) : null;
-        $folderName = ($chosenFolder) ? '/' . $chosenFolder->Name : '';
         $imgs = $xpath->query('//img');
         for ($i = 0; $i < $imgs->length; $i++) {
             $img = $imgs->item($i);
-            $originalPath = 'assets/' . $folderName . '/' . $img->getAttribute('src');
+            $originalPath = Controller::join_links(ASSETS_DIR, $img->getAttribute('src'));
+            // ignore base64 encoded images which show up when importing using PHPOffice/PHPWord Word2007
+            // counter-intuitively it seems that we can simply ignore these and images
+            // are still imported correctly
+            if (preg_match("#data:image/.+?;base64,#", $originalPath)) {
+                continue;
+            }
             $name = FileNameFilter::create()->filter(basename($originalPath ?? ''));
-
             $image = Image::get()->filter([
                 'Name' => $name,
-                'ParentID' => (int)$chosenFolderID
+                'ParentID' => (int) $chosenFolderID
             ])->first();
             if (!($image && $image->exists())) {
                 $image = Image::create();
-                $image->ParentID = (int)$chosenFolderID;
+                $image->ParentID = (int) $chosenFolderID;
                 $image->Name = $name;
                 $image->write();
             }
-
             // make sure it's put in place correctly so Image record knows where it is.
             // e.g. in the case of underscores being renamed to dashes.
             @rename(Director::getAbsFile($originalPath) ?? '', Director::getAbsFile($image->getFilename()) ?? '');
-
             $img->setAttribute('src', $image->getFilename());
         }
 

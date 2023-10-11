@@ -9,11 +9,17 @@ use SilverStripe\Core\Environment;
 use SilverStripe\Core\Injector\Injectable;
 use SilverStripe\ORM\DataObject;
 use ZipArchive;
+use SilverStripe\Dev\Deprecation;
+use SilverStripe\DocumentConverter\Importer;
 
 /**
+ * This class uses the legacy docvert service
+ *
  * Utility class hiding the specifics of the document conversion process.
+ *
+ * @deprecated 3.2.0 Use SilverStripe\DocumentConverter\PHPWordImporter instead.
  */
-class ServiceConnector
+class ServiceConnector implements Importer
 {
 
     use Configurable;
@@ -60,8 +66,17 @@ class ServiceConnector
         'url' => null
     ];
 
+    /**
+     * @param array $fileDescriptor
+     * @param int|null $chosenFolderID
+     */
     public function __construct($fileDescriptor, $chosenFolderID = null)
     {
+        Deprecation::notice(
+            '3.2.0',
+            'Use SilverStripe\DocumentConverter\PHPWordImporter instead.',
+            Deprecation::SCOPE_CLASS
+        );
         $this->fileDescriptor = $fileDescriptor;
         $this->chosenFolderID = $chosenFolderID;
     }
