@@ -6,6 +6,9 @@ use SilverStripe\Assets\File;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\ORM\DataExtension;
 
+/**
+ * @method File ImportedFromFile()
+ */
 class PageExtension extends DataExtension
 {
 
