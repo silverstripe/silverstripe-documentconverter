@@ -5,6 +5,21 @@ sk:
     FIELDNOTSET: 'Žiadna informácia o súbore'
   SilverStripe\DocumentConverter\PageExtension:
     ImportTab: Importovať
+    has_one_ImportedFromFile: 'Importované zo súboru'
+  SilverStripe\DocumentConverter\ServiceConnector:
+    PROCESSFAILED: 'Dokument sa nepodarilo spracovať. Skontrolujte, či ste nahrali formát .doc alebo .docx.'
+    SERVERUNREACHABLE: 'Nepodarilo sa kontaktovať server konverzie dokumentov. Skúste to znovu neskôr alebo kontaktujte správcu systému.'
+  SilverStripe\DocumentConverter\SettingsField:
+    ChooseFolder: 'Vyberte priečinok na uloženie tohto súboru'
+    EachH1: 'pre každý nadpis 1'
+    EachH2: 'pre každý nadpis 2'
+    FileWarningHeader: 'Upozornenie: importom sa odstráni všetok obsah a podstránky tejto stránky.'
+    ImportedFromFile: 'Importujte obsah z dokumentu programu Word'
+    IncludeTOC: 'Nahraďte túto stránku obsahom.'
+    KeepSource: 'Ponechá pôvodný dokument. Pridá odkaz na obsah, ak je povolený.'
+    'No': nie
+    SplitHeader: 'Rozdeliť dokument na strany'
+    publishPages: 'Zverejniť upravené stránky (neodporúča sa, pokiaľ si nie ste istí výsledkom konverzie)'
   UploadField:
     ATTACHFILE: 'Pripojiť súbor'
     ATTACHFILES: 'Pripojiť súbory'
