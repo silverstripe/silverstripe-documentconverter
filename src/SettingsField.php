@@ -33,7 +33,7 @@ class SettingsField extends CompositeField
     public function __construct($children = null)
     {
         if ($children) {
-            $class = get_class();
+            $class = self::class;
             throw new InvalidArgumentException(
                 "{$class}::__construct does not accept extra parameters."
             );
