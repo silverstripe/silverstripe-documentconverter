@@ -3,8 +3,6 @@ pl:
     ATTACHONCESAVED2: 'Pliki mogą zostać dołączone dopiero po pierwszym zapisaniu rekordu.'
   SilverStripe\AssetAdmin\Forms\UploadField:
     FIELDNOTSET: 'Nie znaleziono informacji o pliku'
-  SilverStripe\DocumentConverter\PageExtension:
-    ImportTab: Import
   UploadField:
     ATTACHFILE: 'Załącz plik'
     ATTACHFILES: 'Załącz pliki'

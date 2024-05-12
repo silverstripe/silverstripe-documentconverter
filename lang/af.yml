@@ -8,7 +8,7 @@ af:
   UploadField:
     ATTACHFILE: 'Heg lêer aan'
     ATTACHFILES: 'Heg lêer(s) aan'
-    DROPFILE: 'Laat val ''n lêer'
+    DROPFILE: "Laat val 'n lêer"
     DROPFILES: 'Skuif lêers hiernatoe'
     FROMCOMPUTER: 'Van jou rekenaar af'
     FROMCOMPUTERINFO: 'Laai op van jou rekenaar af'
