@@ -16,7 +16,7 @@ class PageExtension extends DataExtension
         'ImportedFromFile' => File::class
     ];
 
-    public function updateCMSFields(FieldList $fields)
+    protected function updateCMSFields(FieldList $fields)
     {
         /*
         // Currently the ToggleCompositeField plays badly with TreeDropdownField formatting.
