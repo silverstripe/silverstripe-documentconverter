@@ -17,6 +17,7 @@
         "ext-tidy": "*",
         "ext-zip": "*",
         "phpunit/phpunit": "^9.5",
+        "silverstripe/framework": "^4.10",
         "squizlabs/php_codesniffer": "^3.0"
     },
     "autoload": {
