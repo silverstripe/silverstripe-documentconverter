@@ -4,12 +4,12 @@ namespace SilverStripe\DocumentConverter;
 
 use SilverStripe\Assets\File;
 use SilverStripe\Forms\FieldList;
-use SilverStripe\ORM\DataExtension;
+use SilverStripe\Core\Extension;
 
 /**
  * @method File ImportedFromFile()
  */
-class PageExtension extends DataExtension
+class PageExtension extends Extension
 {
 
     private static $has_one = [
