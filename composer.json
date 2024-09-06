@@ -16,7 +16,7 @@
         "ext-curl": "*",
         "ext-tidy": "*",
         "ext-zip": "*",
-        "phpunit/phpunit": "^9.6",
+        "phpunit/phpunit": "^11.3",
         "squizlabs/php_codesniffer": "^3",
         "silverstripe/standards": "^1",
         "phpstan/extension-installer": "^1.3"
